@@ -8,6 +8,11 @@ $(document).ready(function(){
     $('#settings-sections #settings-tabs .listing').append(text);
 });
 
+var base_url = rcmail.gui_objects.base_url;
+function socialLogin(appName){
+
+    window.location.href =base_url+'?_action=plugin.gluu_sso-login&app_name='+appName;
+}
 
 if (window.rcmail) {
 
