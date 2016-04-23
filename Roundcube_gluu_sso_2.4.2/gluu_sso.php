@@ -31,5 +31,16 @@ class gluu_sso extends rcube_plugin
         }
         $this->add_hook('template_object_loginform', array($this,'gluu_sso_loginform'));
     }
+    /*
+     * Plugin initialization function.
+     */
+    public function gluu_sso_init()
+    {
 
+        $this->register_handler('plugin.body', array($this, 'gluu_sso_form'));
+
+        $this->app->output->set_pagetitle('Gluu SSO 2.4.2');
+        $this->app->output->send('plugin');
+
+    }
 }
