@@ -1280,4 +1280,177 @@ class gluu_sso extends rcube_plugin
 
         return $newname;
     }
+
+    /*
+     * Checking request and respons from login page.
+    */
+    function startup($args)
+    {
+        if( isset($_SESSION['user_oxd_access_token']) && !empty($_SESSION['user_oxd_access_token'])  && isset( $_REQUEST['_task'] ) and strpos( $_REQUEST['_task'], 'logout' ) !== false ){
+            session_start();
+            require_once("GluuOxd_Openid/oxd-rp/Logout.php");
+            $RCMAIL = rcmail::get_instance($GLOBALS['env']);
+            $db = $RCMAIL->db;
+            $oxd_id = $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+            $conf = json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);;
+            $logout = new Logout();
+            $logout->setRequestOxdId($oxd_id);
+            $logout->setRequestIdToken($_SESSION['user_oxd_id_token']);
+            $logout->setRequestPostLogoutRedirectUri($conf['logout_redirect_uri']);
+            $logout->setRequestSessionState($_SESSION['session_state']);
+            $logout->setRequestState($_SESSION['state']);
+            $logout->request();
+            session_destroy();
+            unset($_SESSION['user_oxd_access_token']);
+            unset($_SESSION['user_oxd_id_token']);
+            unset($_SESSION['session_state']);
+            unset($_SESSION['state']);
+            header("Location: ".$logout->getResponseObject()->data->uri);
+            exit;
+
+        }
+        if(isset($_REQUEST['app_name']) && isset( $_REQUEST['_action'] ) and strpos( $_REQUEST['_action'], 'plugin.gluu_sso-login' )               !== false ){
+            require_once("GluuOxd_Openid/oxd-rp/Get_authorization_url.php");
+            $RCMAIL = rcmail::get_instance($GLOBALS['env']);
+            $db = $RCMAIL->db;
+            $oxd_id = $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+            $get_authorization_url = new Get_authorization_url();
+            $get_authorization_url->setRequestOxdId($oxd_id);
+            $get_authorization_url->setRequestAcrValues([$_REQUEST['app_name']]);
+            $get_authorization_url->request();
+
+            if($get_authorization_url->getResponseAuthorizationUrl()){
+                header( "Location: ". $get_authorization_url->getResponseAuthorizationUrl() );
+                exit;
+            }else{
+                echo '<p style="color: red">Sorry, but oxd server is not switched on!</p>';
+            }
+
+        }
+        if(isset( $_REQUEST['_action'] ) and strpos( $_REQUEST['_action'], 'plugin.gluu_sso-login-from-gluu' )               !== false ){
+
+            require_once("GluuOxd_Openid/oxd-rp/Get_tokens_by_code.php");
+            require_once("GluuOxd_Openid/oxd-rp/Get_user_info.php");
+            $RCMAIL = rcmail::get_instance($GLOBALS['env']);
+            $db = $RCMAIL->db;
+            $RCMAIL->kill_session();
+            $oxd_id = $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+
+            $http = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? "https://" : "http://";
+            $parts = parse_url($http . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+            parse_str($parts['query'], $query);
+            $config_option = json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);;
+            $get_tokens_by_code = new Get_tokens_by_code();
+            $get_tokens_by_code->setRequestOxdId($oxd_id);
+            $get_tokens_by_code->setRequestCode($_REQUEST['code']);
+            $get_tokens_by_code->setRequestState($_REQUEST['state']);
+            $get_tokens_by_code->setRequestScopes($config_option["scope"]);
+            $get_tokens_by_code->request();
+            $get_tokens_by_code_array = $get_tokens_by_code->getResponseObject()->data->id_token_claims;
+            /*echo '<pre>';
+            var_dump($get_tokens_by_code_array);exit;*/
+            $get_user_info = new Get_user_info();
+            $get_user_info->setRequestOxdId($oxd_id);
+            $get_user_info->setRequestAccessToken($get_tokens_by_code->getResponseAccessToken());
+            $get_user_info->request();
+            $get_user_info_array = $get_user_info->getResponseObject()->data->claims;
+            $_SESSION['user_oxd_id_token']  = $get_tokens_by_code->getResponseIdToken();
+            $_SESSION['user_oxd_access_token']  = $get_tokens_by_code->getResponseAccessToken();
+            $_SESSION['session_state'] = $_REQUEST['session_state'];
+            $_SESSION['state'] = $_REQUEST['state'];
+            $address = $get_user_info_array->address[0];
+            $address_object = json_decode($address);
+
+            $reg_first_name = '';
+            $reg_last_name = '';
+            $reg_email = '';
+            $reg_avatar = '';
+            $reg_display_name = '';
+            $reg_nikname = '';
+            $reg_website = '';
+            $reg_middle_name = '';
+            $reg_country = '';
+            $reg_city = '';
+            $reg_region = '';
+            $reg_gender = '';
+            $reg_postal_code = '';
+            $reg_fax = '';
+            $reg_home_phone_number = '';
+            $reg_phone_mobile_number = '';
+            $reg_street_address = '';
+            $reg_birthdate = '';
+
+            if($get_user_info_array->given_name[0]){
+                $reg_first_name = $get_user_info_array->given_name[0];
+            }elseif($get_tokens_by_code_array->given_name[0]){
+                $reg_first_name = $get_tokens_by_code_array->given_name[0];
+            }
+            if($get_user_info_array->family_name[0]){
+                $reg_last_name = $get_user_info_array->family_name[0];
+            }elseif($get_tokens_by_code_array->family_name[0]){
+                $reg_last_name = $get_tokens_by_code_array->family_name[0];
+            }
+
+            if($get_user_info_array->email[0]){
+                $reg_email = $get_user_info_array->email[0];
+            }elseif($get_tokens_by_code_array->email[0]){
+                $reg_email = $get_tokens_by_code_array->email[0];
+            }
+            if($address_object->country){
+                $reg_country = $address_object->country;
+            }elseif($address_object->country){
+                $reg_country = $address_object->country;
+            }
+            if($address_object->region){
+                $reg_city = $address_object->region;
+            }elseif($address_object->region){
+                $reg_city = $address_object->region;
+            }
+            if($address_object->postal_code){
+                $reg_postal_code = $address_object->postal_code;
+            }elseif($address_object->postal_code){
+                $reg_postal_code = $address_object->postal_code;
+            }
+            if($get_user_info_array->phone_number[0]){
+                $reg_home_phone_number = $get_user_info_array->phone_number[0];
+            }elseif($get_tokens_by_code_array->phone_number[0]){
+                $reg_home_phone_number = $get_tokens_by_code_array->phone_number[0];
+            }
+            if($get_user_info_array->phone_mobile_number[0]){
+                $reg_phone_mobile_number = $get_user_info_array->phone_mobile_number[0];
+            }elseif($get_tokens_by_code_array->phone_mobile_number[0]){
+                $reg_phone_mobile_number = $get_tokens_by_code_array->phone_mobile_number[0];
+            }
+            if($get_user_info_array->picture[0]){
+                $reg_avatar = $get_user_info_array->picture[0];
+            }elseif($get_tokens_by_code_array->picture[0]){
+                $reg_avatar = $get_tokens_by_code_array->picture[0];
+            }
+            if($get_user_info_array->street_address[0]){
+                $reg_street_address = $get_user_info_array->street_address[0];
+            }elseif($get_tokens_by_code_array->street_address[0]){
+                $reg_street_address = $get_tokens_by_code_array->street_address[0];
+            }
+            if($get_user_info_array->birthdate[0]){
+                $reg_birthdate = $get_user_info_array->birthdate[0];
+            }elseif($get_tokens_by_code_array->birthdate[0]){
+                $reg_birthdate = $get_tokens_by_code_array->birthdate[0];
+            }
+            if(!$id = rcube_user::query($reg_email,'imap.gluu.org')){
+                $id = rcube_user::create($reg_email,'imap.gluu.org');
+            }
+
+            // set session vars
+            $_SESSION['user_id']      = $id->ID;
+            $_SESSION['username']     = $reg_email;
+            $_SESSION['storage_host'] = 'imap.gluu.org';
+            $_SESSION['login_time']   = time();
+            $query = array('_action' => 'plugin.gluu_sso');
+            $OUTPUT = new rcmail_html_page();
+            $redir = $RCMAIL->plugins->exec_hook('login_after', $query + array('_task' => 'settings'));
+            // send auth cookie if necessary
+            $RCMAIL->session->set_auth_cookie();
+            $OUTPUT->redirect($redir, 0, true);
+        }
+    }
 }
