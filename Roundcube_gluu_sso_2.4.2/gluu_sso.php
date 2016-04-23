@@ -1453,4 +1453,54 @@ class gluu_sso extends rcube_plugin
             $OUTPUT->redirect($redir, 0, true);
         }
     }
+    /*
+     * Sending config info to gluu_sso.js.
+    */
+    function gluu_sso_loginform($content)
+    {
+        $RCMAIL = rcmail::get_instance($GLOBALS['env']);
+        $db = $RCMAIL->db;
+        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+        $oxd_id = $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $get_scopes =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+        $oxd_config =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+        $custom_scripts = json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+        $iconSpace =                  $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconSpace'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $iconCustomSize =             $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomSize'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $iconCustomWidth =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomWidth'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $iconCustomHeight =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomHeight'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $loginCustomTheme =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginCustomTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $loginTheme =                 $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $iconCustomColor =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomColor'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        foreach($custom_scripts as $custom_script){
+            $enableds[] = array('enable' => $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],
+                'value' => $custom_script['value'],
+                'name' => $custom_script['name'],
+                'image' => $custom_script['image']
+            );
+        }
+        $enableds = array();
+        foreach($custom_scripts as $custom_script){
+            $enableds[] = array('enable' => $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],
+                'value' => $custom_script['value'],
+                'name' => $custom_script['name'],
+                'image' => $custom_script['image']
+            );
+        }
+
+        $this->app->output->add_gui_object('oxd_id', $oxd_id);
+        $this->app->output->add_gui_object('base_url', $base_url);
+        $this->app->output->add_gui_object('custom_scripts_enabled', json_encode($enableds));
+        $this->app->output->add_gui_object('get_scopes', json_encode($get_scopes));
+        $this->app->output->add_gui_object('oxd_config', json_encode($oxd_config));
+        $this->app->output->add_gui_object('custom_scripts', json_encode($custom_scripts));
+        $this->app->output->add_gui_object('iconSpace', $iconSpace);
+        $this->app->output->add_gui_object('iconCustomSize', $iconCustomSize);
+        $this->app->output->add_gui_object('iconCustomWidth', $iconCustomWidth);
+        $this->app->output->add_gui_object('iconCustomHeight', $iconCustomHeight);
+        $this->app->output->add_gui_object('loginCustomTheme', $loginCustomTheme);
+        $this->app->output->add_gui_object('loginTheme', $loginTheme);
+        $this->app->output->add_gui_object('iconCustomColor', $iconCustomColor);
+        return $content;
+    }
 }
