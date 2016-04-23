@@ -1038,4 +1038,18 @@ class gluu_sso extends rcube_plugin
 
     }
 
+    /*
+     * Plugin page showing function.
+    */
+    public function gluu_sso_form()
+    {
+        $boxTitle = html::div(array('id' => "prefs-title", 'class' => 'boxtitle'), 'Use OpenID Connect to login by leveraging the oxd client service demon.');
+        $this->include_stylesheet('GluuOxd_Openid/css/gluu-oxd-css.css');
+        $this->include_script('GluuOxd_Openid/js/scope-custom-script.js');
+
+        $tableHtml=$this->admin_html();
+        unset($_SESSION['message_error']);
+        unset($_SESSION['message_success']);
+        return html::div(array('class' => ''),$boxTitle . html::div(array('class' => "boxcontent"), $tableHtml ));
+    }
 }
