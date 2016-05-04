@@ -278,7 +278,7 @@ class Register_site extends Client_OXD_RP
             "contacts" => $this->getRequestContacts(),
             "grant_types" => $this->getRequestGrantTypes(),
             "response_types"=> $this->getRequestResponseTypes(),
-            "client_logout_uri"=> $this->getRequestClientLogoutUri()
+            "client_logout_uris"=> [$this->getRequestClientLogoutUri()]
         );
     }
 
