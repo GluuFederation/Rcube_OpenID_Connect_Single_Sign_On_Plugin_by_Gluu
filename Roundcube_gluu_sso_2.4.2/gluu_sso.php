@@ -713,7 +713,7 @@ class gluu_sso extends rcube_plugin
         }
         $html.= '<form id="form-apps" name="form-apps" method="post"
                 action="?_task=settings&_action=plugin.gluu_sso-save" enctype="multipart/form-data">
-                <input type="hidden" name="form_key" value="sugar_crm_config_page"/>
+                <input type="hidden" name="form_key" value="roundcube_crm_config_page"/>
                 <div class="mo2f_table_layout"><input type="submit" name="submit" value="'.$this->gettext('Save').'" style="width:100px;margin-right:2%" class="button button-primary button-large"';
         if (!$oxd_id) {
             $html.= ' disabled ';
@@ -1134,7 +1134,7 @@ class gluu_sso extends rcube_plugin
             $_SESSION['message_success'] = $this->gettext('messageScriptDeletedSuccessful');
             $RCMAIL->output->redirect('plugin.gluu_sso');
         }
-        else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'sugar_crm_config_page' )               !== false ) {
+        else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'roundcube_crm_config_page' )               !== false ) {
             $this->gluu_db_query_update('loginTheme', $_REQUEST['gluuoxd_openid_login_theme']);
             $this->gluu_db_query_update('loginCustomTheme', $_REQUEST['gluuoxd_openid_login_custom_theme']);
             $this->gluu_db_query_update('iconSpace', $_REQUEST['gluuox_login_icon_space']);
