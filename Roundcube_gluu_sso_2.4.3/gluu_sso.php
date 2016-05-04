@@ -713,7 +713,7 @@ class gluu_sso extends rcube_plugin
         }
         $html.= '<form id="form-apps" name="form-apps" method="post"
                 action="?_task=settings&_action=plugin.gluu_sso-save" enctype="multipart/form-data">
-                <input type="hidden" name="form_key" value="sugar_crm_config_page"/>
+                <input type="hidden" name="form_key" value="roundcube_crm_config_page"/>
                 <div class="mo2f_table_layout"><input type="submit" name="submit" value="'.$this->gettext('Save').'" style="width:100px;margin-right:2%" class="button button-primary button-large"';
         if (!$oxd_id) {
             $html.= ' disabled ';
@@ -1041,7 +1041,7 @@ class gluu_sso extends rcube_plugin
     public function gluu_sso_save()
     {
         require_once("GluuOxd_Openid/oxd-rp/Register_site.php");
-        //require_once("GluuOxd_Openid/oxd-rp/Update_site_registration.php");
+        require_once("GluuOxd_Openid/oxd-rp/Update_site_registration.php");
         $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
         $db = $RCMAIL->db;
@@ -1134,7 +1134,7 @@ class gluu_sso extends rcube_plugin
             $_SESSION['message_success'] = $this->gettext('messageScriptDeletedSuccessful');
             $RCMAIL->output->redirect('plugin.gluu_sso');
         }
-        else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'sugar_crm_config_page' )               !== false ) {
+        else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'roundcube_crm_config_page' )               !== false ) {
             $this->gluu_db_query_update('loginTheme', $_REQUEST['gluuoxd_openid_login_theme']);
             $this->gluu_db_query_update('loginCustomTheme', $_REQUEST['gluuoxd_openid_login_custom_theme']);
             $this->gluu_db_query_update('iconSpace', $_REQUEST['gluuox_login_icon_space']);
@@ -1226,7 +1226,29 @@ class gluu_sso extends rcube_plugin
                         }
                     }
                 }
-                //$storeConfig ->saveConfig('gluu/oxd/oxd_openid_custom_scripts',serialize($custom_scripts), 'default', 0);
+
+            }
+            $config_option =   json_decode($this->gluu_db_query_select('oxd_config'),true);
+            $update_site_registration = new Update_site_registration();
+            $update_site_registration->setRequestAcrValues($config_option['acr_values']);
+            $update_site_registration->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
+            $update_site_registration->setRequestRedirectUris($config_option['redirect_uris']);
+            $update_site_registration->setRequestGrantTypes($config_option['grant_types']);
+            $update_site_registration->setRequestResponseTypes(['code']);
+            $update_site_registration->setRequestLogoutRedirectUri($config_option['logout_redirect_uri']);
+            $update_site_registration->setRequestContacts([$config_option["admin_email"]]);
+            $update_site_registration->setRequestApplicationType('web');
+            $update_site_registration->setRequestClientLogoutUri($config_option['logout_redirect_uri']);
+            $update_site_registration->setRequestScope($config_option['scope']);
+            $status = $update_site_registration->request();
+            if(!$status['status']){
+                $_SESSION['message_error'] = $status['message'];
+                $RCMAIL->output->redirect('plugin.gluu_sso');
+            }
+            if($update_site_registration->getResponseOxdId()){
+                $oxd_id = $update_site_registration->getResponseOxdId();
+                $this->gluu_db_query_update('oxd_id', $oxd_id);
+
             }
             $_SESSION['message_success'] = $this->gettext('messageOpenIDConnectConfiguration');
             $_SESSION['message_error'] = $message_error;
@@ -1388,22 +1410,21 @@ class gluu_sso extends rcube_plugin
     */
     function gluu_sso_loginform($content)
     {
-        $RCMAIL = rcmail::get_instance($GLOBALS['env']);
-        $db = $RCMAIL->db;
+
         $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
-        $oxd_id = $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $get_scopes =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $oxd_config =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $custom_scripts = json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $iconSpace =                  $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconSpace'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomSize =             $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomSize'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomWidth =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomWidth'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomHeight =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomHeight'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $loginCustomTheme =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginCustomTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $loginTheme =                 $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomColor =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomColor'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $oxd_id = $this->gluu_db_query_select('oxd_id');
+        $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
+        $oxd_config =   json_decode($this->gluu_db_query_select('oxd_config'),true);
+        $custom_scripts =   json_decode($this->gluu_db_query_select('custom_scripts'),true);
+        $iconSpace = $this->gluu_db_query_select('iconSpace');
+        $iconCustomSize = $this->gluu_db_query_select('iconCustomSize');
+        $iconCustomWidth = $this->gluu_db_query_select('iconCustomWidth');
+        $iconCustomHeight = $this->gluu_db_query_select('iconCustomHeight');
+        $loginCustomTheme = $this->gluu_db_query_select('loginCustomTheme');
+        $loginTheme = $this->gluu_db_query_select('loginTheme');
+        $iconCustomColor = $this->gluu_db_query_select('iconCustomColor');
         foreach($custom_scripts as $custom_script){
-            $enableds[] = array('enable' => $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],
+            $enableds[] = array('enable' => $this->gluu_db_query_select($custom_script['value']."Enable"),
                 'value' => $custom_script['value'],
                 'name' => $custom_script['name'],
                 'image' => $custom_script['image']
@@ -1411,13 +1432,12 @@ class gluu_sso extends rcube_plugin
         }
         $enableds = array();
         foreach($custom_scripts as $custom_script){
-            $enableds[] = array('enable' => $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],
+            $enableds[] = array('enable' => $this->gluu_db_query_select($custom_script['value']."Enable"),
                 'value' => $custom_script['value'],
                 'name' => $custom_script['name'],
                 'image' => $custom_script['image']
             );
         }
-
         $this->app->output->add_gui_object('oxd_id', $oxd_id);
         $this->app->output->add_gui_object('base_url', $base_url);
         $this->app->output->add_gui_object('custom_scripts_enabled', json_encode($enableds));
