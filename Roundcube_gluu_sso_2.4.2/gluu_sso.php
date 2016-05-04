@@ -46,17 +46,18 @@ class gluu_sso extends rcube_plugin
     */
     public function init()
     {
+        $this->add_texts('localization/', false);
         $this->add_hook('startup', array($this, 'startup'));
         $this->include_script('gluu_sso.js');
         $this->app = rcmail::get_instance();
-        $this->app->output->add_label('Gluu SSO 2.4.2');
-        $this->register_action('plugin.gluu_sso', array($this, 'gluu_sso_init'));
-        $this->register_action('plugin.gluu_sso-save', array($this, 'gluu_sso_save'));
+        $this->app->output->add_label($this->gettext('gluu_sso'));
 
         $src = $this->app->config->get('skin_path') . '/gluu_sso.css';
         if (file_exists($this->home . '/' . $src)) {
             $this->include_stylesheet($src);
         }
+        $this->register_action('plugin.gluu_sso', array($this, 'gluu_sso_init'));
+        $this->register_action('plugin.gluu_sso-save', array($this, 'gluu_sso_save'));
         $this->add_hook('template_object_loginform', array($this,'gluu_sso_loginform'));
     }
 
@@ -78,86 +79,79 @@ class gluu_sso extends rcube_plugin
         $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
         $db = $RCMAIL->db;
-
-        $query = "CREATE TABLE IF NOT EXISTS `gluu_table` (
+        $result = $db->query("CREATE TABLE IF NOT EXISTS `gluu_table` (
 
               `gluu_action` varchar(255) NOT NULL,
               `gluu_value` longtext NOT NULL,
               UNIQUE(`gluu_action`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-        $result = $db->query($query);
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")){
-            $get_scopes = json_encode(array("openid","profile","email","address","clientinfo","mobile_phone","phone"));
-            $result = $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('scopes','$get_scopes')");
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        if(!json_decode($this->gluu_db_query_select('scopes'),true)){
+            $this->gluu_db_query_insert('scopes',json_encode(array("openid","profile","email","imapData")));
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")){
-            $custom_scripts = json_encode(array(
-                array('name'=>'Google','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
-                array('name'=>'Basic','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
-                array('name'=>'Duo','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
-                array('name'=>'U2F token','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
-            ));
-            $result = $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('custom_scripts','$custom_scripts')");
+        if(!json_decode($this->gluu_db_query_select('custom_scripts'),true)){
+            $this->gluu_db_query_insert('custom_scripts',json_encode(array(
+                        array('name'=>'Google','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
+                        array('name'=>'Basic','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
+                        array('name'=>'Duo','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
+                        array('name'=>'U2F token','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
+                    )
+                )
+            );
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")){
-            $oxd_config = json_encode(array(
-                "oxd_host_ip" => '127.0.0.1',
-                "oxd_host_port" =>8099,
-                "admin_email" => '',
-                "authorization_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
-                "logout_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
-                "scope" => ["openid","profile","email","address","clientinfo","mobile_phone","phone"],
-                "grant_types" =>["authorization_code"],
-                "response_types" => ["code"],
-                "application_type" => "web",
-                "redirect_uris" => [ $base_url.'?_action=plugin.gluu_sso-login-from-gluu' ],
-                "acr_values" => [],
-            ));
-            $result = $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('oxd_config','$oxd_config')");
+        if(!json_decode($this->gluu_db_query_select('oxd_config'),true)){
+            $this->gluu_db_query_insert('oxd_config',json_encode(array(
+                        "oxd_host_ip" => '127.0.0.1',
+                        "oxd_host_port" =>8099,
+                        "admin_email" => '',
+                        "authorization_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
+                        "logout_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
+                        "scope" => ["openid","profile","email","imapData"],
+                        "grant_types" =>["authorization_code"],
+                        "response_types" => ["code"],
+                        "application_type" => "web",
+                        "redirect_uris" => [ $base_url.'?_action=plugin.gluu_sso-login-from-gluu' ],
+                        "acr_values" => [],
+                    )
+                )
+            );
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconSpace'")){
-            $iconSpace = '10';
-            $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('iconSpace','$iconSpace')");
+        if(!$this->gluu_db_query_select('iconSpace')){
+            $this->gluu_db_query_insert('iconSpace','10');
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomSize'")){
-            $iconCustomSize = '50';
-            $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('iconCustomSize','$iconCustomSize')");
+        if(!$this->gluu_db_query_select('iconCustomSize')){
+            $this->gluu_db_query_insert('iconCustomSize','50');
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomWidth'")){
-            $iconCustomWidth = '200';
-            $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('iconCustomWidth','$iconCustomWidth')");
+        if(!$this->gluu_db_query_select('iconCustomWidth')){
+            $this->gluu_db_query_insert('iconCustomWidth','200');
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomHeight'")){
-            $iconCustomHeight = '35';
-            $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('iconCustomWidth','$iconCustomHeight')");
+        if(!$this->gluu_db_query_select('iconCustomHeight')){
+            $this->gluu_db_query_insert('iconCustomHeight','35');
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginCustomTheme'")){
-            $loginCustomTheme = 'default';
-            $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('loginCustomTheme','$loginCustomTheme')");
+        if(!$this->gluu_db_query_select('loginCustomTheme')){
+            $this->gluu_db_query_insert('loginCustomTheme','default');
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginTheme'")){
-            $loginTheme = 'circle';
-            $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('loginTheme','$loginTheme')");
+        if(!$this->gluu_db_query_select('loginTheme')){
+            $this->gluu_db_query_insert('loginTheme','circle');
         }
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomColor'")){
-            $iconCustomColor = '#0000FF';
-            $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('iconCustomColor','$iconCustomColor')");
+        if(!$this->gluu_db_query_select('iconCustomColor')){
+            $this->gluu_db_query_insert('iconCustomColor','#0000FF');
         }
 
-        $get_scopes =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $oxd_config =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $custom_scripts = json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $iconSpace =                  $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconSpace'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomSize =             $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomSize'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomWidth =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomWidth'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomHeight =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomHeight'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $loginCustomTheme =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginCustomTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $loginTheme =                 $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomColor =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomColor'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+
+        $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
+        $oxd_config =   json_decode($this->gluu_db_query_select('oxd_config'),true);
+        $custom_scripts =   json_decode($this->gluu_db_query_select('custom_scripts'),true);
+        $iconSpace = $this->gluu_db_query_select('iconSpace');
+        $iconCustomSize = $this->gluu_db_query_select('iconCustomSize');
+        $iconCustomWidth = $this->gluu_db_query_select('iconCustomWidth');
+        $iconCustomHeight = $this->gluu_db_query_select('iconCustomHeight');
+        $loginCustomTheme = $this->gluu_db_query_select('loginCustomTheme');
+        $loginTheme = $this->gluu_db_query_select('loginTheme');
+        $iconCustomColor = $this->gluu_db_query_select('iconCustomColor');
 
         $oxd_id = '';
-        if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0]){
-            $oxd_id = $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        if($this->gluu_db_query_select('oxd_id')){
+            $oxd_id = $this->gluu_db_query_select('oxd_id');
         }
 
 
@@ -413,10 +407,10 @@ class gluu_sso extends rcube_plugin
         }
         $html.='</div>
         <ul class="navbar navbar-tabs">
-            <li id="account_setup"><a data-method="#accountsetup">General</a></li>
-            <li id="social-sharing-setup"><a data-method="#socialsharing">OpenID Connect Configuration</a></li>
-            <li id="social-login-setup"><a data-method="#sociallogin">RoundCube Configuration</a></li>
-            <li id="help_trouble"><a data-method="#helptrouble">Help & Troubleshooting</a></li>
+            <li id="account_setup"><a data-method="#accountsetup">'.$this->gettext('General').'</a></li>
+            <li id="social-sharing-setup"><a data-method="#socialsharing">'.$this->gettext('OpenIDConnect').'</a></li>
+            <li id="social-login-setup"><a data-method="#sociallogin">'.$this->gettext('rConfig').'</a></li>
+            <li id="help_trouble"><a data-method="#helptrouble">'.$this->gettext('helpTrouble').'</a></li>
         </ul>
         <div class="container-page">';
         if (!$oxd_id) {
@@ -427,35 +421,18 @@ class gluu_sso extends rcube_plugin
                             <input type="hidden" name="form_key" value="general_register_page"/>
                             <div class="login_GluuOxd">
                                 <div class="mess_red">
-                                    Please enter the details of your OpenID Connect Provider.
+                                    '.$this->gettext('messageConnectProvider').'
                                 </div>
                                 <br/>
-                                <div><h3>Register your site with an OpenID Connect Provider</h3></div>
+                                <div><h3>'.$this->gettext('registerMessageConnectProvider').'</h3></div>
                                 <hr>
-                                <div class="mess_red">If you do not have an OpenID Connect provider, you may want to look at the Gluu Server (
-                                    <a target="_blank" href="http://www.gluu.org/docs">Like RoundCube, there is a free open source Community Edition. For more information about Gluu Server support please visit <a target="_blank" href="http://www.gluu.org">our website.</a></a>)
-                                </div>
-                                <div class="mess_red">
-                                    <h3>Instructions to Install oxd server</h3>
-                                    <br><b>NOTE:</b> The oxd server should be installed on the same server as your RoundCube site. It is recommended that the oxd server listen only on the localhost interface, so only your local applications can reach its API"s.
-                                    <ol style="list-style:decimal !important; margin: 30px">
-                                        <li>Extract and copy in your DMZ Server.</li>
-                                        <li>Download the latest oxd-server package for Centos or Ubuntu. See
-                                            <a target="_blank" href="http://gluu.org/docs-oxd">oxd docs</a> for more info.
-                                        </li><li>If you are installing an .rpm or .deb, make sure you have Java in your server.
-                                        </li><li>Edit <b>oxd-conf.json</b> in the <b>conf</b> directory to specify the port on which
-                                            it will run, and specify the hostname of the OpenID Connect provider.</li>
-                                        <li>Open the command line and navigate to the extracted folder in the <b>bin</b> directory.</li>
-                                        <li>For Linux environment, run <b>sh oxd-start.sh &amp;</b></li>
-                                        <li>For Windows environment, run <b>oxd-start.bat</b></li>
-                                        <li>After the server starts, set the port number and your email in this page and click Next.</li>
-                                    </ol>
-                                </div>
+                                <div class="mess_red">'.$this->gettext('linkToGluu').'</div>
+                                <div class="mess_red">'.$this->gettext('Instructions').'</div>
                                 <hr>
                                 <div>
                                     <table class="table">
                                         <tr>
-                                            <td><b><font color="#FF0000">*</font>Admin Email:</b></td>
+                                            <td><b><font color="#FF0000">*</font>'.$this->gettext('adminEmail').'/b></td>
                                             <td><input class="" type="email" name="loginemail" id="loginemail"
                                                        autofocus="true" required placeholder="person@example.com"
                                                        style="width:400px;"
@@ -463,17 +440,17 @@ class gluu_sso extends rcube_plugin
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><b><font color="#FF0000">*</font>Port number:</b></td>
+                                            <td><b><font color="#FF0000">*</font>'.$this->gettext('portNumber').'</b></td>
                                             <td>
                                                 <input class="" type="number" name="oxd_port" min="0" max="65535"
                                                        value="'.$oxd_config['oxd_host_port'].'"
-                                                       style="width:400px;" placeholder="Enter port number."/>
+                                                       style="width:400px;" placeholder="'.$this->gettext('EnterportNumber').'"/>
                                             </td>
                                         </tr>
                                     </table>
                                 </div>
                                 <br/>
-                                <div><input type="submit" name="submit" value="Next" style="width: 120px" class=""/></div>
+                                <div><input type="submit" name="submit" value="'.$this->gettext('next').'" style="width: 120px" class=""/></div>
                                 <br/>
                                 <br/>
                             </div>
@@ -507,7 +484,7 @@ class gluu_sso extends rcube_plugin
                     </div>
                     <form action="?_task=settings&_action=plugin.gluu_sso-save" method="post">
                         <input type="hidden" name="form_key" value="general_oxd_id_reset"/>
-                        <p><input style="width: 200px; background-color: red !important; cursor: pointer" type="submit" class="button button-primary " value="Reset configurations" name="resetButton"/></p>
+                        <p><input style="width: 200px; background-color: red !important; cursor: pointer" type="submit" class="button button-primary " value="'.$this->gettext('resetConfig').'" name="resetButton"/></p>
                     </form>
                 </div>';
         }
@@ -532,7 +509,7 @@ class gluu_sso extends rcube_plugin
                             </div>
                             <div class="entry-edit" >
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
-                                    <h4 class="icon-head head-edit-form fieldset-legend">All Scopes</h4>
+                                    <h4 class="icon-head head-edit-form fieldset-legend">'.$this->gettext('allScopes').'</h4>
                                 </div>
                                 <div class="fieldset">
                                     <div class="hor-scroll">
@@ -563,8 +540,8 @@ class gluu_sso extends rcube_plugin
         <table class="form-list" style="text-align: center">
                 <tr class="wrapper-tr" style="text-align: center">
                     <th style="border: 1px solid #43ffdf; width: 70px;text-align: center"><h3>N</h3></th>
-                    <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>Name</h3></th>
-                    <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>Delete</h3></th>
+                    <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>'.$this->gettext('name').'</h3></th>
+                    <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>'.$this->gettext('delete').'</h3></th>
                 </tr>';
         $n = 0;
         foreach ($get_scopes as $scop) {
@@ -603,15 +580,15 @@ class gluu_sso extends rcube_plugin
                             </div>
                             <div class="entry-edit">
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
-                                    <h4 class="icon-head head-edit-form fieldset-legend">Add scopes</h4>
+                                    <h4 class="icon-head head-edit-form fieldset-legend">'.$this->gettext('addScopes').'</h4>
                                 </div>
                                 <div class="fieldset">
-                                    <input type="button" id="adding" class="button button-primary button-large add" style="width: 100px" value="Add scopes"/>
+                                    <input type="button" id="adding" class="button button-primary button-large add" style="width: 100px" value="'.$this->gettext('addScopes').'"/>
                                     <div class="hor-scroll">
                                         <table class="form-list5 container">
                                             <tr class="wrapper-tr">
                                                 <td class="value">
-                                                    <input type="text" placeholder="Input scope name" name="scope_name[]"/>
+                                                    <input type="text" placeholder="'.$this->gettext('InputScopeName').'" name="scope_name[]"/>
                                                 </td>
                                             </tr>
                                         </table>
@@ -620,38 +597,11 @@ class gluu_sso extends rcube_plugin
                             </div>
                             <div class="entry-edit" >
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
-                                    <h4 class="icon-head head-edit-form fieldset-legend">All custom scripts</h4>
+                                    <h4 class="icon-head head-edit-form fieldset-legend">'.$this->gettext('allCustomScripts').'</h4>
                                 </div>
                                 <div class="fieldset">
                                     <div class="hor-scroll">
-                                        <h3>Manage Authentication</h3>
-                                        <p>An OpenID Connect Provider (OP) like the Gluu Server may provide many different work flows for
-                                            authentication. For example, an OP may offer password authentication, token authentication, social
-                                            authentication, biometric authentication, and other different mechanisms. Offering a lot of different
-                                            types of authentication enables an OP to offer the most convenient, secure, and affordable option to
-                                            identify a person, depending on the need to mitigate risk, and the sensors and inputs available on the
-                                            device that the person is using.
-                                        </p>
-                                        <p>
-                                            The OP enables a client (like a RoundCube site), to signal which type of authentication should be
-                                            used. The client can register a
-                                            <a target="_blank" href="http://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata">default_acr_value</a>
-                                            or during the authentication process, a client may request a specific type of authentication using the
-                                            <a target="_blank" href="http://openid.net/specs/openid-connect-core-1_0.html#AuthRequest">acr_values</a> parameter.
-                                            This is the mechanism that the Gluu SSO module uses: each login icon corresponds to a acr request value.
-                                            For example, and acr may tell the OpenID Connect to use Facebook, Google or even plain old password authentication.
-                                            The nice thing about this approach is that your applications (like RoundCube) don"t have
-                                            to implement the business logic for social login--it"s handled by the OpenID Connect Provider.
-                                        </p>
-                                        <p>';
-        $html.= 'If you are using the Gluu Server as your OP, youll notice that in the Manage Custom Scripts
-                                            tab of oxTrust (the Gluu Server admin interface), each authentication script has a name.
-                                            This name corresponds to the acr value.  The default acr for password authentication is set in
-                                            the
-                                            <a target="_blank" href="https://www.gluu.org/docs/admin-guide/configuration/#manage-authentication">LDAP Authentication</a>,
-                                            section--look for the "Name" field. Likewise, each custom script has a "Name", for example see the
-                                            <a target="_blank" href="https://www.gluu.org/docs/admin-guide/configuration/#manage-custom-scripts">Manage Custom Scripts</a> section.
-                                        </p>
+                                        '.$this->gettext('manageAuthentication').'
                                         <table style="width:100%;display: table;">
                                             <tbody>
                                             <tr>';
@@ -667,7 +617,7 @@ class gluu_sso extends rcube_plugin
                                                                value="1"
                                                                onchange="previewLoginIcons();"  ';
 
-            if ($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'")->fetchAll(PDO::FETCH_COLUMN, 0)[0]) $html.= 'checked';
+            if ($this->gluu_db_query_select($custom_script['value']."Enable")) $html.= 'checked';
             $html.= '/><b>'.$custom_script['name'].'</b>
                                                     </td>';
 
@@ -680,10 +630,10 @@ class gluu_sso extends rcube_plugin
                                         <table class="form-list" style="text-align: center">
                                             <tr class="wrapper-tr" style="text-align: center">
                                                 <th style="border: 1px solid #43ffdf; width: 70px;text-align: center"><h3>N</h3></th>
-                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>Display Name</h3></th>
-                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>ACR Value</h3></th>
-                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>Image</h3></th>
-                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>Delete</h3></th>
+                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>'.$this->gettext('DisplayName').'</h3></th>
+                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>'.$this->gettext('ACRvalue').'</h3></th>
+                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>'.$this->gettext('Image').'</h3></th>
+                                                <th style="border: 1px solid #43ffdf;width: 200px;text-align: center"><h3>'.$this->gettext('delete').'</h3></th>
                                             </tr>
                                             ';
         $n = 0;
@@ -722,20 +672,20 @@ class gluu_sso extends rcube_plugin
                                 </div>
                                 <br/>
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
-                                    <h4 class="icon-head head-edit-form fieldset-legend">Add multiple custom scripts</h4>
-                                    <p style="color:#cc0b07; font-style: italic; font-weight: bold;font-size: larger"> Both fields are required</p>
+                                    <h4 class="icon-head head-edit-form fieldset-legend">'.$this->gettext('multipleCustomScripts').'</h4>
+                                    <p style="color:#cc0b07; font-style: italic; font-weight: bold;font-size: larger"> '.$this->gettext('BothFields').'</p>
                                 </div>
                                 <div class="fieldset">
                                     <div class="hor-scroll">
                                         <input type="hidden" name="count_scripts" value="1" id="count_scripts">
-                                        <input type="button" class="button button-primary button-large " style="width: 100px" id="adder" value="Add acr"/>
+                                        <input type="button" class="button button-primary button-large " style="width: 100px" id="adder" value="'.$this->gettext('Addacr').'"/>
                                         <table class="form-list1 container">
                                             <tr class="count_scripts wrapper-trr">
                                                 <td class="value">
-                                                    <input style="width: 200px !important;" type="text" placeholder="Display name (example Google+)" name="name_in_site_1"/>
+                                                    <input style="width: 200px !important;" type="text" placeholder="'.$this->gettext('exampleGoogle').'" name="name_in_site_1"/>
                                                 </td>
                                                 <td class="value">
-                                                    <input style="width: 270px !important;" type="text" placeholder="ACR Value (script name in the Gluu Server)" name="name_in_gluu_1"/>
+                                                    <input style="width: 270px !important;" type="text" placeholder="'.$this->gettext('scriptName').'" name="name_in_gluu_1"/>
                                                 </td>
                                                 <td class="value">
                                                     <input type="file" accept="image/png" name="images_1"/>
@@ -747,7 +697,7 @@ class gluu_sso extends rcube_plugin
                             </div>
                         </div>
                         <div>
-                            <input style="width: 100px" type="submit" class="set_oxd_config button button-primary button-large"';
+                            <input style="width: 100px" type="submit" class="button button-primary button-large"';
         if (!$oxd_id) {
             $html.= 'disabled';
         }
@@ -759,34 +709,35 @@ class gluu_sso extends rcube_plugin
             </div>';
         $html.= '<div class="page" id="sociallogin">';
         if (!$oxd_id){
-            $html.= '<div class="mess_red">Please enter OXD configuration to continue.</div><br/>';
+            $html.= '<div class="mess_red">'.$this->gettext('OXDConfiguration').'</div><br/>';
         }
         $html.= '<form id="form-apps" name="form-apps" method="post"
                 action="?_task=settings&_action=plugin.gluu_sso-save" enctype="multipart/form-data">
                 <input type="hidden" name="form_key" value="sugar_crm_config_page"/>
-                <div class="mo2f_table_layout"><input type="submit" name="submit" value="Save" style="width:100px;margin-right:2%" class="button button-primary button-large"';
+                <div class="mo2f_table_layout"><input type="submit" name="submit" value="'.$this->gettext('Save').'" style="width:100px;margin-right:2%" class="button button-primary button-large"';
         if (!$oxd_id) {
             $html.= ' disabled ';
         }
         $html.= ' />
                 </div>
                 <div id="twofactor_list" class="mo2f_table_layout">
-        <h3>Gluu login config </h3>
+        <h3>'.$this->gettext('GluuLoginConfig').'</h3>
         <hr>
-        <p style="font-size:14px">Customize your login icons using a range of shapes and sizes. You can choose different places to display these icons and also customize redirect url after login.</p>
+        <p style="font-size:14px">'.$this->gettext('CustomizeYourLogin').'
+        </p>
         <br/>
         <hr>
         <br>
-        <h3>Customize Login Icons</h3>
-        <p>Customize shape, theme and size of the login icons</p>
+        <h3>'.$this->gettext('CustomizeLoginIcons').'</h3>
+        <p>'.$this->gettext('CustomizeShape').'</p>
         <table style="width:100%;display: table;">
             <tbody>
             <tr>
                 <td>
                     <b>Shape</b>
-                    <b style="margin-left:130px; display: none">Theme</b>
-                    <b style="margin-left:130px;">Space between Icons</b>
-                    <b style="margin-left:86px;">Size of Icons</b>
+                    <b style="margin-left:130px; display: none">'.$this->gettext('Theme').'</b>
+                    <b style="margin-left:130px;">'.$this->gettext('SpaceBetweenIcons').'</b>
+                    <b style="margin-left:86px;">'.$this->gettext('SizeofIcons').'</b>
                 </td>
             </tr>
             <tr>
@@ -797,7 +748,7 @@ class gluu_sso extends rcube_plugin
         }
         $html.= 'name="gluuoxd_openid_login_theme" value="circle"
                            onclick="checkLoginButton();gluuOxLoginPreview(document.getElementById(\'gluuox_login_icon_size\').value ,\'circle\',setLoginCustomTheme(),document.getElementById(\'gluuox_login_icon_custom_color\').value,document.getElementById(\'gluuox_login_icon_space\').value)"
-                           style="width: auto;" checked>Round
+                           style="width: auto;" checked>'.$this->gettext('Round').'
                             <span style="margin-left:106px; display: none">
                                 <input type="radio" ';
         if (!$oxd_id) {
@@ -827,8 +778,8 @@ class gluu_sso extends rcube_plugin
         }
         $html.= ' type="button" value="-" onmouseup="document.getElementById(\'gluuox_login_icon_space\').value=parseInt(document.getElementById(\'gluuox_login_icon_space\').value)-1;gluuOxLoginPreview(setSizeOfIcons()  ,setLoginTheme(),setLoginCustomTheme(),document.getElementById(\'gluuox_login_icon_custom_color\').value,document.getElementById(\'gluuox_login_icon_space\').value)">
                             </span>
-                            <span id="commontheme" style="margin-left:95px">
-                                <input style="width:50px "';
+                            <span id="commontheme" style="margin-left:135px">
+                                <input style="width:50px; margin-right: 5px "';
         if (!$oxd_id) {
             $html.= ' disabled ';
         }
@@ -851,7 +802,7 @@ class gluu_sso extends rcube_plugin
         $html.= 'type="button" value="-"
                                        onmouseup="document.getElementById(\'gluuox_login_icon_size\').value=parseInt(document.getElementById(\'gluuox_login_icon_size\').value)-1;gluuOxLoginPreview(document.getElementById(\'gluuox_login_icon_size\').value ,setLoginTheme(),setLoginCustomTheme(),document.getElementById(\'gluuox_login_icon_custom_color\').value,document.getElementById(\'gluuox_login_icon_space\').value)">
                             </span>
-                            <span style="margin-left: 95px; display: none;" class="longbuttontheme">Width:&nbsp;
+                            <span style="margin-left: 95px; display: none;" class="longbuttontheme">'.$this->gettext('Width').'
                                 <input style="width:50px"';
         if (!$oxd_id) {
             $html.= ' disabled ';
@@ -887,7 +838,7 @@ class gluu_sso extends rcube_plugin
         if ($loginTheme == 'oval') {
             $html.= ' checked';
         }
-        $html.= '>Rounded Edges
+        $html.= '>'.$this->gettext('RoundedEdges').'
                         <span style="margin-left:50px; display: none">
                                 <input type="radio"';
         if (!$oxd_id) {
@@ -900,7 +851,7 @@ class gluu_sso extends rcube_plugin
         if ($loginCustomTheme == 'custom') {
             $html.= ' checked ';
         }
-        $html.= '>Custom Background*
+        $html.= '>'.$this->gettext('CustomBackground').'
                                 </span>
                             <span style="margin-left: 256px; display: none;" class="longbuttontheme">Height:
                             <input style="width:50px" ';
@@ -964,15 +915,14 @@ class gluu_sso extends rcube_plugin
         if ($loginTheme == 'longbutton') {
             $html.= ' checked ';
         }
-        $html.= '>Long
-                    Button with Text
+        $html.= '>'.$this->gettext('LongButton').'
                 </td>
             </tr>
             </tbody>
         </table>
         <br>
         <h3>Preview : </h3>
-        <span hidden id="no_apps_text">No apps selected</span>
+        <span hidden id="no_apps_text">'.$this->gettext('NoApps').'</span>
         <div>';
         foreach ($custom_scripts as $custom_script) {
             $html .= '<img class="gluuox_login_icon_preview"
