@@ -1,7 +1,7 @@
 <?php
 
 $labels = array();
-$labels['gluu_sso'] = 'Gluu SSO 2.4.2';
+$labels['gluu_sso'] = 'Gluu SSO 2.4.3';
 $labels['General'] = 'General';
 $labels['OpenIDConnect'] = 'OpenID Connect Configuration';
 $labels['rConfig'] = 'RoundCube Configuration';
