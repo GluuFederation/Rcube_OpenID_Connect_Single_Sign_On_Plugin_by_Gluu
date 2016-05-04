@@ -1388,22 +1388,21 @@ class gluu_sso extends rcube_plugin
     */
     function gluu_sso_loginform($content)
     {
-        $RCMAIL = rcmail::get_instance($GLOBALS['env']);
-        $db = $RCMAIL->db;
+
         $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
-        $oxd_id = $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $get_scopes =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $oxd_config =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $custom_scripts = json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
-        $iconSpace =                  $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconSpace'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomSize =             $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomSize'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomWidth =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomWidth'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomHeight =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomHeight'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $loginCustomTheme =           $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginCustomTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $loginTheme =                 $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'loginTheme'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
-        $iconCustomColor =            $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'iconCustomColor'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        $oxd_id = $this->gluu_db_query_select('oxd_id');
+        $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
+        $oxd_config =   json_decode($this->gluu_db_query_select('oxd_config'),true);
+        $custom_scripts =   json_decode($this->gluu_db_query_select('custom_scripts'),true);
+        $iconSpace = $this->gluu_db_query_select('iconSpace');
+        $iconCustomSize = $this->gluu_db_query_select('iconCustomSize');
+        $iconCustomWidth = $this->gluu_db_query_select('iconCustomWidth');
+        $iconCustomHeight = $this->gluu_db_query_select('iconCustomHeight');
+        $loginCustomTheme = $this->gluu_db_query_select('loginCustomTheme');
+        $loginTheme = $this->gluu_db_query_select('loginTheme');
+        $iconCustomColor = $this->gluu_db_query_select('iconCustomColor');
         foreach($custom_scripts as $custom_script){
-            $enableds[] = array('enable' => $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],
+            $enableds[] = array('enable' => $this->gluu_db_query_select($custom_script['value']."Enable"),
                 'value' => $custom_script['value'],
                 'name' => $custom_script['name'],
                 'image' => $custom_script['image']
@@ -1411,13 +1410,12 @@ class gluu_sso extends rcube_plugin
         }
         $enableds = array();
         foreach($custom_scripts as $custom_script){
-            $enableds[] = array('enable' => $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],
+            $enableds[] = array('enable' => $this->gluu_db_query_select($custom_script['value']."Enable"),
                 'value' => $custom_script['value'],
                 'name' => $custom_script['name'],
                 'image' => $custom_script['image']
             );
         }
-
         $this->app->output->add_gui_object('oxd_id', $oxd_id);
         $this->app->output->add_gui_object('base_url', $base_url);
         $this->app->output->add_gui_object('custom_scripts_enabled', json_encode($enableds));
