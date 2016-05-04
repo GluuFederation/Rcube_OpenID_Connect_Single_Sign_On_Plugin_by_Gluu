@@ -1054,21 +1054,21 @@ class gluu_sso extends rcube_plugin
                 "admin_email" => $_POST['loginemail'],
                 "authorization_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
                 "logout_redirect_uri" => $base_url.'?_task=logout',
-                "scope" => ["openid","profile","email","address","clientinfo","mobile_phone","phone"],
+                "scope" => ["openid","profile","email","imapData"],
                 "grant_types" =>["authorization_code"],
                 "response_types" => ["code"],
                 "application_type" => "web",
                 "redirect_uris" => [ $base_url.'?_action=plugin.gluu_sso-login-from-gluu'],
                 "acr_values" => [],
             ));
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '$config_option' WHERE `gluu_action` LIKE 'oxd_config';");
+            $this->gluu_db_query_update('oxd_config', $config_option);
             $config_option = array(
                 "oxd_host_ip" => '127.0.0.1',
                 "oxd_host_port" =>$_POST['oxd_port'],
                 "admin_email" => $_POST['loginemail'],
                 "authorization_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
                 "logout_redirect_uri" => $base_url.'?_task=logout',
-                "scope" => ["openid","profile","email","address","clientinfo","mobile_phone","phone"],
+                "scope" => ["openid","profile","email","imapData"],
                 "grant_types" =>["authorization_code"],
                 "response_types" => ["code"],
                 "application_type" => "web",
@@ -1093,16 +1093,16 @@ class gluu_sso extends rcube_plugin
             }
             if($register_site->getResponseOxdId()){
                 $oxd_id = $register_site->getResponseOxdId();
-                if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")){
-                    $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('oxd_id','$oxd_id')");
+                if(!$this->gluu_db_query_select('oxd_id')){
+                    $this->gluu_db_query_insert('oxd_id',$oxd_id);
                 }
             }
-            $_SESSION['message_success'] = 'Site registered Successful. You can configure Gluu and Social Login now.';
+            $_SESSION['message_success'] = $this->gettext('messageSiteRegisteredSuccessful');
             $RCMAIL->output->redirect('plugin.gluu_sso');
         }
         else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'openid_config_delete_scop' )           !== false ) {
 
-            $get_scopes =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+            $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
             $up_cust_sc =  array();
 
             foreach($get_scopes as $custom_scop){
@@ -1112,17 +1112,17 @@ class gluu_sso extends rcube_plugin
             }
 
             $get_scopes = json_encode($up_cust_sc);
-            $result = $db->query("UPDATE `gluu_table` SET `gluu_value` = '$get_scopes' WHERE `gluu_action` LIKE 'scopes';");
-            $_SESSION['message_success'] = 'Scope deleted Successfully.';
+            $this->gluu_db_query_update('scopes', $get_scopes);
+            $_SESSION['message_success'] = $this->gettext('messageScopeDeletedSuccessful');
             $RCMAIL->output->redirect('plugin.gluu_sso');
         }
         else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_oxd_id_reset' )                !== false and !empty($_REQUEST['resetButton'])) {
             $db->query("DROP TABLE IF EXISTS `gluu_table`;");
-            $_SESSION['message_success'] = 'Configurations deleted Successfully.';
+            $_SESSION['message_success'] = $this->gettext('messageConfigurationsDeletedSuccessful');
             $RCMAIL->output->redirect('plugin.gluu_sso');
         }
         else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'openid_config_delete_custom_scripts' ) !== false ) {
-            $get_scopes =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+            $get_scopes =   json_decode($this->gluu_db_query_select('custom_scripts'),true);
             $up_cust_sc =  array();
             foreach($get_scopes as $custom_scop){
                 if($custom_scop['value'] !=$_REQUEST['value_script']){
@@ -1130,20 +1130,19 @@ class gluu_sso extends rcube_plugin
                 }
             }
             $get_scopes = json_encode($up_cust_sc);
-
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '$get_scopes' WHERE `gluu_action` LIKE 'custom_scripts';");
-            $_SESSION['message_success'] = 'Custom script deleted Successfully.';
+            $this->gluu_db_query_update('custom_scripts', $get_scopes);
+            $_SESSION['message_success'] = $this->gettext('messageScriptDeletedSuccessful');
             $RCMAIL->output->redirect('plugin.gluu_sso');
         }
         else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'sugar_crm_config_page' )               !== false ) {
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '".$_REQUEST['gluuoxd_openid_login_theme']."' WHERE `gluu_action` LIKE 'loginTheme';");
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '".$_REQUEST['gluuoxd_openid_login_custom_theme']."' WHERE `gluu_action` LIKE 'loginCustomTheme';");
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '".$_REQUEST['gluuox_login_icon_space']."' WHERE `gluu_action` LIKE 'iconSpace';");
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '".$_REQUEST['gluuox_login_icon_custom_size']."' WHERE `gluu_action` LIKE 'iconCustomSize';");
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '".$_REQUEST['gluuox_login_icon_custom_width']."' WHERE `gluu_action` LIKE 'iconCustomWidth';");
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '".$_REQUEST['gluuox_login_icon_custom_height']."' WHERE `gluu_action` LIKE 'iconCustomHeight';");
-            $db->query("UPDATE `gluu_table` SET `gluu_value` = '".$_REQUEST['gluuox_login_icon_custom_color']."' WHERE `gluu_action` LIKE 'iconCustomColor';");
-            $_SESSION['message_success'] = 'Your configuration has been saved.';
+            $this->gluu_db_query_update('loginTheme', $_REQUEST['gluuoxd_openid_login_theme']);
+            $this->gluu_db_query_update('loginCustomTheme', $_REQUEST['gluuoxd_openid_login_custom_theme']);
+            $this->gluu_db_query_update('iconSpace', $_REQUEST['gluuox_login_icon_space']);
+            $this->gluu_db_query_update('iconCustomSize', $_REQUEST['gluuox_login_icon_custom_size']);
+            $this->gluu_db_query_update('iconCustomWidth', $_REQUEST['gluuox_login_icon_custom_width']);
+            $this->gluu_db_query_update('iconCustomHeight', $_REQUEST['gluuox_login_icon_custom_height']);
+            $this->gluu_db_query_update('iconCustomColor', $_REQUEST['gluuox_login_icon_custom_color']);
+            $_SESSION['message_success'] = $this->gettext('messageYourConfiguration');
             $RCMAIL->output->redirect('plugin.gluu_sso');
         }
         else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'openid_config_page' )                  !== false ) {
@@ -1151,36 +1150,35 @@ class gluu_sso extends rcube_plugin
             $message_success = '';
             $message_error = '';
             if(!empty($params['scope']) && isset($params['scope'])){
-                $oxd_config =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_config'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+                $oxd_config =   json_decode($this->gluu_db_query_select('oxd_config'),true);
                 $oxd_config['scope'] = $params['scope'];
                 $oxd_config = json_encode($oxd_config);
-                $result = $db->query("UPDATE `gluu_table` SET `gluu_value` = '$oxd_config' WHERE `gluu_action` LIKE 'oxd_config';");
+                $this->gluu_db_query_update('oxd_config',$oxd_config);
             }
             if(!empty($params['scope_name']) && isset($params['scope_name'])){
-                $get_scopes =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+                $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
                 foreach($params['scope_name'] as $scope){
                     if($scope && !in_array($scope,$get_scopes)){
                         array_push($get_scopes, $scope);
                     }
                 }
                 $get_scopes = json_encode($get_scopes);
-                $db->query("UPDATE `gluu_table` SET `gluu_value` = '$get_scopes' WHERE `gluu_action` LIKE 'scopes';");
+                $this->gluu_db_query_update('scopes',$get_scopes);
             }
 
-            $custom_scripts =   json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+            $custom_scripts =   json_decode($this->gluu_db_query_select('custom_scripts'),true);
 
             foreach($custom_scripts as $custom_script){
                 $action = $custom_script['value']."Enable";
                 $value = $params['gluuoxd_openid_'.$custom_script['value'].'_enable'];
-
-                $typeLogin =  $db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '$action'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+                $typeLogin =  $this->gluu_db_query_select($custom_script['value']."Enable");
                 if(!$typeLogin){
-                    $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('$action','$value')");
+                    $this->gluu_db_query_insert($action,$value);
                 }
                 if($value != NULL){
-                    $db->query("UPDATE `gluu_table` SET `gluu_value` = '1' WHERE `gluu_action` LIKE '$action';");
+                    $this->gluu_db_query_update($action,'1');
                 }else{
-                    $db->query("UPDATE `gluu_table` SET `gluu_value` = '0' WHERE `gluu_action` LIKE '$action';");
+                    $this->gluu_db_query_update($action,'0');
                 }
 
             }
@@ -1189,7 +1187,7 @@ class gluu_sso extends rcube_plugin
                 $error_array = array();
                 $error = true;
 
-                $custom_scripts = json_decode($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")->fetchAll(PDO::FETCH_COLUMN, 0)[0],true);
+                $custom_scripts = json_decode($this->gluu_db_query_select('custom_scripts'),true);
                 for($i=1; $i<=$params['count_scripts']; $i++){
                     if(isset($params['name_in_site_'.$i]) && !empty($params['name_in_site_'.$i]) && isset($params['name_in_gluu_'.$i]) && !empty($params['name_in_gluu_'.$i]) && isset($_FILES['images_'.$i]) && !empty($_FILES['images_'.$i])){
                         foreach($custom_scripts as $custom_script){
@@ -1211,26 +1209,26 @@ class gluu_sso extends rcube_plugin
                             if (move_uploaded_file($_FILES['images_'.$i]["tmp_name"], $target_file)) {
                                 array_push($custom_scripts, array('name'=>$params['name_in_site_'.$i],'image'=>$target_file,'value'=>$params['name_in_gluu_'.$i]));
                                 $custom_scripts_json = json_encode($custom_scripts);
-                                $db->query("UPDATE `gluu_table` SET `gluu_value` = '$custom_scripts_json' WHERE `gluu_action` LIKE 'custom_scripts';");
+                                $this->gluu_db_query_update('custom_scripts', $custom_scripts_json);
 
                             } else {
-                                $message_error.= "Sorry, there was an error uploading ".$_FILES['images_'.$i]["name"]." file.<br/>";
+                                $message_error.= $this->gettext('messageSorryUploading').$_FILES['images_'.$i]["name"].' '.$this->gettext('file').".<br/>";
                                 break;
                             }
 
                         }else{
-                            $message_error.='Name = '.$params['name_in_site_'.$i]. ' or value = '. $params['name_in_gluu_'.$i]. ' is exist.<br/>';
+                            $message_error.=$this->gettext('name').' = '.$params['name_in_site_'.$i].' '.$this->gettext('or'). '  value = '. $params['name_in_gluu_'.$i] .' '.$this->gettext('isExist').'<br/>';
                             break;
                         }
                     }else{
                         if(!empty($params['name_in_site_'.$i]) || !empty($params['name_in_gluu_'.$i]) || !empty($_FILES['images_'.$i]["name"])){
-                            $message_error.='Necessary to fill the hole row.<br/>';
+                            $message_error.=$this->gettext('necessaryToFill').'<br/>';
                         }
                     }
                 }
                 //$storeConfig ->saveConfig('gluu/oxd/oxd_openid_custom_scripts',serialize($custom_scripts), 'default', 0);
             }
-            $_SESSION['message_success'] = 'Your OpenID connect configuration has been saved.';
+            $_SESSION['message_success'] = $this->gettext('messageOpenIDConnectConfiguration');
             $_SESSION['message_error'] = $message_error;
             $RCMAIL->output->redirect('plugin.gluu_sso');
             exit;
