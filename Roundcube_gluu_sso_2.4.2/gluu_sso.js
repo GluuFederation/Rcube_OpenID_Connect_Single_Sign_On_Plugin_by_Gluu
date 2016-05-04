@@ -1,19 +1,17 @@
-/**
- * Created by Vlad Karapetyan on 4/23/2016.
- */
-
 $(document).ready(function(){
     var text = '<li class="listitem" id="settingsgluusso">' +
         '<a href="./?_task=settings&amp;_action=plugin.gluu_sso" >Gluu SSO 2.4.2</a></li>';
     $('#settings-sections #settings-tabs .listing').append(text);
+    var text = '<span class="tablink gluusso " id="settingstabgluusso">' +
+        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso">Gluu SSO 2.4.2</a></span>';
+    $('#tabsbar').append(text);
+
 });
 
 var base_url = rcmail.gui_objects.base_url;
 function socialLogin(appName){
-
     window.location.href =base_url+'?_action=plugin.gluu_sso-login&app_name='+appName;
 }
-
 if (window.rcmail) {
 
     var loginTheme = rcmail.gui_objects.loginTheme;
@@ -37,14 +35,12 @@ if (window.rcmail) {
                 '}' +
                 '</style>';
             if (loginTheme != 'longbutton') {
-
                 text += '<style>.gluuOx_custom_login_icon_preview{cursor:pointer;}</style>';
                 if (loginTheme == 'circle') {
                     text += '<style> .gluuox_login_icon_preview, .gluuOx_custom_login_icon_preview{border-radius: 999px !important;}</style>';
                 } else if (loginTheme == 'oval') {
                     text += '<style> .gluuox_login_icon_preview, .gluuOx_custom_login_icon_preview{border-radius: 5px !important;}</style>';
                 }
-
                 if (loginCustomTheme != 'custom') {
                     var cl = '';
                     array.forEach(function (object) {
@@ -52,16 +48,13 @@ if (window.rcmail) {
                             cl = "socialLogin('" + object.value + "')";
                             text += '<img class="gluuox_login_icon_preview" id="gluuox_login_icon_preview_' + object.value + '" src="' + object.image + '"' +
                                 'style="margin-left: ' + iconSpace + 'px;  height:' + iconCustomSize + 'px; width:' + iconCustomSize + 'px;" onclick="' + cl + '"  />';
-
                         }
                     });
 
                 }
             }
             $('.box-inner').append(text);
-
-
+            $('.boxcontent').append(text);
         }
     });
-
 }
