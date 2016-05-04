@@ -67,7 +67,7 @@ class gluu_sso extends rcube_plugin
     public function gluu_sso_init()
     {
         $this->register_handler('plugin.body', array($this, 'gluu_sso_form'));
-        $this->app->output->set_pagetitle('Gluu SSO 2.4.2');
+        $this->app->output->set_pagetitle($this->gettext('gluu_sso'));
         $this->app->output->send('plugin');
     }
 
@@ -1023,7 +1023,9 @@ class gluu_sso extends rcube_plugin
     */
     public function gluu_sso_form()
     {
-        $boxTitle = html::div(array('id' => "prefs-title", 'class' => 'boxtitle'), 'Use OpenID Connect to login by leveraging the oxd client service demon.');
+        // add taskbar button
+
+        $boxTitle = html::div(array('id' => "prefs-title", 'class' => 'boxtitle'), $this->gettext('hederGluu'));
         $this->include_stylesheet('GluuOxd_Openid/css/gluu-oxd-css.css');
         $this->include_script('GluuOxd_Openid/js/scope-custom-script.js');
 
