@@ -1,9 +1,9 @@
 $(document).ready(function(){
     var text = '<li class="listitem" id="settingsgluusso">' +
-        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso" >Gluu SSO 2.4.2</a></li>';
+        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso" >Gluu SSO 2.4.3</a></li>';
     $('#settings-sections #settings-tabs .listing').append(text);
     var text = '<span class="tablink gluusso " id="settingstabgluusso">' +
-        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso">Gluu SSO 2.4.2</a></span>';
+        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso">Gluu SSO 2.4.3</a></span>';
     $('#tabsbar').append(text);
 
 });
