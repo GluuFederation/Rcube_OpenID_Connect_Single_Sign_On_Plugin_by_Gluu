@@ -12,7 +12,35 @@ class gluu_sso extends rcube_plugin
     private $app;
     private $obj;
     private $config;
+    static $gluuDB;
 
+    function __construct(rcube_plugin_api $api)
+    {
+        parent::__construct($api);
+        $RCMAIL = rcmail::get_instance($GLOBALS['env']);
+        self::$gluuDB = $RCMAIL->db;
+    }
+
+    /*
+     * Select data from db:gluu_table.
+    */
+    public function gluu_db_query_select($gluu_action){
+        return self::$gluuDB->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$gluu_action."'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+    }
+
+    /*
+     * Insert data to db:gluu_table.
+    */
+    public function gluu_db_query_insert($gluu_action, $gluu_value){
+        return self::$gluuDB->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('".$gluu_action."', '".$gluu_value."')");
+    }
+
+    /*
+     * Update data to db:gluu_table.
+    */
+    public function gluu_db_query_update($gluu_action, $gluu_value){
+        return  self::$gluuDB->query("UPDATE `gluu_table` SET `gluu_value` = '".$gluu_value."' WHERE `gluu_action` LIKE '".$gluu_action."';");
+    }
     /*
      * Initializes the plugin.
     */
@@ -1282,7 +1310,7 @@ class gluu_sso extends rcube_plugin
     }
 
     /*
-     * Checking request and respons from login page.
+     * Checking request and response from login page.
     */
     function startup($args)
     {
