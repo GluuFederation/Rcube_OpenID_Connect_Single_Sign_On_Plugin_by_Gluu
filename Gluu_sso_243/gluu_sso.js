@@ -44,7 +44,7 @@ if (window.rcmail) {
                 if (loginCustomTheme != 'custom') {
                     var cl = '';
                     array.forEach(function (object) {
-                        if (object.enable) {
+                        if (object.enable == 1) {
                             cl = "socialLogin('" + object.value + "')";
                             text += '<img class="gluuox_login_icon_preview" id="gluuox_login_icon_preview_' + object.value + '" src="' + object.image + '"' +
                                 'style="margin-left: ' + iconSpace + 'px;  height:' + iconCustomSize + 'px; width:' + iconCustomSize + 'px;" onclick="' + cl + '"  />';
