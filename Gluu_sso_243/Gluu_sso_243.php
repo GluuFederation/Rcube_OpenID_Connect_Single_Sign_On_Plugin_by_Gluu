@@ -2,11 +2,11 @@
 /*
  +-----------------------------------------------------------------------+
  | Gluu SSO plugin for RoundCube                                         |
- |                                                                       |
  | Copyright (C) 2016 Vlad Karapetyan <vlad.karapetyan.1988@mail.ru>     |
  +-----------------------------------------------------------------------+
  */
-class gluu_sso extends rcube_plugin
+
+class Gluu_sso_243 extends rcube_plugin
 {
     public $task = 'login|logout|settings';
     private $app;
@@ -41,6 +41,7 @@ class gluu_sso extends rcube_plugin
     public function gluu_db_query_update($gluu_action, $gluu_value){
         return  self::$gluuDB->query("UPDATE `gluu_table` SET `gluu_value` = '".$gluu_value."' WHERE `gluu_action` LIKE '".$gluu_action."';");
     }
+
     /*
      * Initializes the plugin.
     */
@@ -76,7 +77,13 @@ class gluu_sso extends rcube_plugin
     */
     public function admin_html()
     {
-        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://' :  'https://';
+        $url = $_SERVER['REQUEST_URI']; //returns the current URL
+        $parts = explode('/',$url);
+        $base_url.= $_SERVER['SERVER_NAME'];
+        for ($i = 0; $i < count($parts) - 1; $i++) {
+            $base_url .= $parts[$i] . "/";
+        }
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
         $db = $RCMAIL->db;
         $result = $db->query("CREATE TABLE IF NOT EXISTS `gluu_table` (
@@ -90,10 +97,10 @@ class gluu_sso extends rcube_plugin
         }
         if(!json_decode($this->gluu_db_query_select('custom_scripts'),true)){
             $this->gluu_db_query_insert('custom_scripts',json_encode(array(
-                        array('name'=>'Google','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
-                        array('name'=>'Basic','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
-                        array('name'=>'Duo','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
-                        array('name'=>'U2F token','image'=>'plugins/gluu_sso/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
+                        array('name'=>'Google','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
+                        array('name'=>'Basic','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
+                        array('name'=>'Duo','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
+                        array('name'=>'U2F token','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
                     )
                 )
             );
@@ -136,8 +143,6 @@ class gluu_sso extends rcube_plugin
         if(!$this->gluu_db_query_select('iconCustomColor')){
             $this->gluu_db_query_insert('iconCustomColor','#0000FF');
         }
-
-
         $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
         $oxd_config =   json_decode($this->gluu_db_query_select('oxd_config'),true);
         $custom_scripts =   json_decode($this->gluu_db_query_select('custom_scripts'),true);
@@ -148,7 +153,6 @@ class gluu_sso extends rcube_plugin
         $loginCustomTheme = $this->gluu_db_query_select('loginCustomTheme');
         $loginTheme = $this->gluu_db_query_select('loginTheme');
         $iconCustomColor = $this->gluu_db_query_select('iconCustomColor');
-
         $oxd_id = '';
         if($this->gluu_db_query_select('oxd_id')){
             $oxd_id = $this->gluu_db_query_select('oxd_id');
@@ -462,7 +466,7 @@ class gluu_sso extends rcube_plugin
                     <div>
                         <div>
                             <div class="about">
-                                <h3 style="color: #45a8ff" class="sc"><img style=" height: 45px; margin-left: 20px;" src="plugins/gluu_sso/GluuOxd_Openid/images/icons/ox.png"/>&nbsp; server config</h3>
+                                <h3 style="color: #45a8ff" class="sc"><img style=" height: 45px; margin-left: 20px;" src="plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/ox.png"/>&nbsp; server config</h3>
                             </div>
                         </div>
                         <div class="entry-edit" >
@@ -503,7 +507,7 @@ class gluu_sso extends rcube_plugin
                             <div>
                                 <div class="about">
                                     <br/>
-                                    <h3 style="color: #00aa00" class="sc"><img style="height: 45px; margin-left: 30px;" src="plugins/gluu_sso/GluuOxd_Openid/images/icons/gl.png"/> &nbsp; server config
+                                    <h3 style="color: #00aa00" class="sc"><img style="height: 45px; margin-left: 30px;" src="plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/gl.png"/> &nbsp; server config
                                     </h3>
                                 </div>
                             </div>
@@ -1042,7 +1046,13 @@ class gluu_sso extends rcube_plugin
     {
         require_once("GluuOxd_Openid/oxd-rp/Register_site.php");
         require_once("GluuOxd_Openid/oxd-rp/Update_site_registration.php");
-        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://' :  'https://';
+        $url = $_SERVER['REQUEST_URI']; //returns the current URL
+        $parts = explode('/',$url);
+        $base_url.= $_SERVER['SERVER_NAME'];
+        for ($i = 0; $i < count($parts) - 1; $i++) {
+            $base_url .= $parts[$i] . "/";
+        }
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
         $db = $RCMAIL->db;
 
@@ -1197,7 +1207,7 @@ class gluu_sso extends rcube_plugin
                             }
                         }
                         if($error){
-                            $target_dir = "plugins/gluu_sso/GluuOxd_Openid/images/icons/";
+                            $target_dir = "plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/";
                             $target_file = $target_dir . basename($_FILES['images_'.$i]["name"]);
                             $uploadOk = 1;
                             $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -1412,7 +1422,13 @@ class gluu_sso extends rcube_plugin
     function gluu_sso_loginform($content)
     {
 
-        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://' :  'https://';
+        $url = $_SERVER['REQUEST_URI']; //returns the current URL
+        $parts = explode('/',$url);
+        $base_url.= $_SERVER['SERVER_NAME'];
+        for ($i = 0; $i < count($parts) - 1; $i++) {
+            $base_url .= $parts[$i] . "/";
+        }
         $oxd_id = $this->gluu_db_query_select('oxd_id');
         $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
         $oxd_config =   json_decode($this->gluu_db_query_select('oxd_config'),true);
