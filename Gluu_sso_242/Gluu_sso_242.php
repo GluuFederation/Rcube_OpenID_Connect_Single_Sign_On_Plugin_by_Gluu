@@ -6,7 +6,7 @@
  | Copyright (C) 2016 Vlad Karapetyan <vlad.karapetyan.1988@mail.ru>     |
  +-----------------------------------------------------------------------+
  */
-class gluu_sso extends rcube_plugin
+class Gluu_sso_242 extends rcube_plugin
 {
     public $task = 'login|logout|settings';
     private $app;

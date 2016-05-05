@@ -1230,13 +1230,14 @@ class gluu_sso extends rcube_plugin
             }
             $config_option =   json_decode($this->gluu_db_query_select('oxd_config'),true);
             $update_site_registration = new Update_site_registration();
+            $update_site_registration->setRequestOxdId($this->gluu_db_query_select("oxd_id"));
             $update_site_registration->setRequestAcrValues($config_option['acr_values']);
             $update_site_registration->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
             $update_site_registration->setRequestRedirectUris($config_option['redirect_uris']);
             $update_site_registration->setRequestGrantTypes($config_option['grant_types']);
             $update_site_registration->setRequestResponseTypes(['code']);
             $update_site_registration->setRequestLogoutRedirectUri($config_option['logout_redirect_uri']);
-            $update_site_registration->setRequestContacts([$config_option["admin_email"]]);
+            $update_site_registration->setRequestContacts([$config_option['admin_email']]);
             $update_site_registration->setRequestApplicationType('web');
             $update_site_registration->setRequestClientLogoutUri($config_option['logout_redirect_uri']);
             $update_site_registration->setRequestScope($config_option['scope']);
