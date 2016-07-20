@@ -1,7 +1,7 @@
 <?php
 /*
  +-----------------------------------------------------------------------+
- | Gluu SSO plugin for RoundCube                                         |
+ | OpenID Connect Single Sign-On (SSO) Plugin by Gluu for RoundCube                                         |
  |                                                                       |
  | Copyright (C) 2016 Vlad Karapetyan <vlad.karapetyan.1988@mail.ru>     |
  +-----------------------------------------------------------------------+
@@ -41,6 +41,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
     public function gluu_db_query_update($gluu_action, $gluu_value){
         return  self::$gluuDB->query("UPDATE `gluu_table` SET `gluu_value` = '".$gluu_value."' WHERE `gluu_action` LIKE '".$gluu_action."';");
     }
+
     /*
      * Initializes the plugin.
     */
@@ -72,7 +73,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
     }
 
     /*
-     * Gluu SSO admin page configuration.
+     * OpenID Connect Single Sign-On (SSO) Plugin by Gluu admin page configuration.
     */
     public function admin_html()
     {
@@ -96,10 +97,10 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         }
         if(!json_decode($this->gluu_db_query_select('custom_scripts'),true)){
             $this->gluu_db_query_insert('custom_scripts',json_encode(array(
-                        array('name'=>'Google','image'=>'plugins/Gluu_sso_242/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
-                        array('name'=>'Basic','image'=>'plugins/Gluu_sso_242/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
-                        array('name'=>'Duo','image'=>'plugins/Gluu_sso_242/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
-                        array('name'=>'U2F token','image'=>'plugins/Gluu_sso_242/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
+                        array('name'=>'Google','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
+                        array('name'=>'Basic','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
+                        array('name'=>'Duo','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
+                        array('name'=>'U2F token','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
                     )
                 )
             );
@@ -142,8 +143,6 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         if(!$this->gluu_db_query_select('iconCustomColor')){
             $this->gluu_db_query_insert('iconCustomColor','#0000FF');
         }
-
-
         $get_scopes =   json_decode($this->gluu_db_query_select('scopes'),true);
         $oxd_config =   json_decode($this->gluu_db_query_select('oxd_config'),true);
         $custom_scripts =   json_decode($this->gluu_db_query_select('custom_scripts'),true);
@@ -154,7 +153,6 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         $loginCustomTheme = $this->gluu_db_query_select('loginCustomTheme');
         $loginTheme = $this->gluu_db_query_select('loginTheme');
         $iconCustomColor = $this->gluu_db_query_select('iconCustomColor');
-
         $oxd_id = '';
         if($this->gluu_db_query_select('oxd_id')){
             $oxd_id = $this->gluu_db_query_select('oxd_id');
@@ -468,7 +466,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                     <div>
                         <div>
                             <div class="about">
-                                <h3 style="color: #45a8ff" class="sc"><img style=" height: 45px; margin-left: 20px;" src="plugins/Gluu_sso_242/GluuOxd_Openid/images/icons/ox.png"/>&nbsp; server config</h3>
+                                <h3 style="color: #45a8ff" class="sc"><img style=" height: 45px; margin-left: 20px;" src="plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/ox.png"/>&nbsp; server config</h3>
                             </div>
                         </div>
                         <div class="entry-edit" >
@@ -509,7 +507,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                             <div>
                                 <div class="about">
                                     <br/>
-                                    <h3 style="color: #00aa00" class="sc"><img style="height: 45px; margin-left: 30px;" src="plugins/Gluu_sso_242/GluuOxd_Openid/images/icons/gl.png"/> &nbsp; server config
+                                    <h3 style="color: #00aa00" class="sc"><img style="height: 45px; margin-left: 30px;" src="plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/gl.png"/> &nbsp; server config
                                     </h3>
                                 </div>
                             </div>
@@ -584,7 +582,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                                     </div>
                                 </div>
                             </div>
-                            <div class="entry-edit" style="display: none !important;">
+                            <div class="entry-edit">
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
                                     <h4 class="icon-head head-edit-form fieldset-legend">'.$this->gettext('addScopes').'</h4>
                                 </div>
@@ -951,7 +949,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                 }
             </style>
             <div class="page" id="helptrouble">
-'.$this->gettext('doocumentation242').'
+                '.$this->gettext('doocumentation243').'
             </div>
         </div>
     </div>
@@ -985,7 +983,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
     public function gluu_sso_save()
     {
         require_once("GluuOxd_Openid/oxd-rp/Register_site.php");
-        //require_once("GluuOxd_Openid/oxd-rp/Update_site_registration.php");
+        require_once("GluuOxd_Openid/oxd-rp/Update_site_registration.php");
         $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://' :  'https://';
         $url = $_SERVER['REQUEST_URI']; //returns the current URL
         $parts = explode('/',$url);
@@ -1147,7 +1145,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                             }
                         }
                         if($error){
-                            $target_dir = "plugins/Gluu_sso_242/GluuOxd_Openid/images/icons/";
+                            $target_dir = "plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/";
                             $target_file = $target_dir . basename($_FILES['images_'.$i]["name"]);
                             $uploadOk = 1;
                             $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
@@ -1176,7 +1174,30 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                         }
                     }
                 }
-                //$storeConfig ->saveConfig('gluu/oxd/oxd_openid_custom_scripts',serialize($custom_scripts), 'default', 0);
+
+            }
+            $config_option =   json_decode($this->gluu_db_query_select('oxd_config'),true);
+            $update_site_registration = new Update_site_registration();
+            $update_site_registration->setRequestOxdId($this->gluu_db_query_select("oxd_id"));
+            $update_site_registration->setRequestAcrValues($config_option['acr_values']);
+            $update_site_registration->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
+            $update_site_registration->setRequestRedirectUris($config_option['redirect_uris']);
+            $update_site_registration->setRequestGrantTypes($config_option['grant_types']);
+            $update_site_registration->setRequestResponseTypes(['code']);
+            $update_site_registration->setRequestLogoutRedirectUri($config_option['logout_redirect_uri']);
+            $update_site_registration->setRequestContacts([$config_option['admin_email']]);
+            $update_site_registration->setRequestApplicationType('web');
+            $update_site_registration->setRequestClientLogoutUri($config_option['logout_redirect_uri']);
+            $update_site_registration->setRequestScope($config_option['scope']);
+            $status = $update_site_registration->request();
+            if(!$status['status']){
+                $_SESSION['message_error'] = $status['message'];
+                $RCMAIL->output->redirect('plugin.gluu_sso');
+            }
+            if($update_site_registration->getResponseOxdId()){
+                $oxd_id = $update_site_registration->getResponseOxdId();
+                $this->gluu_db_query_update('oxd_id', $oxd_id);
+
             }
             $_SESSION['message_success'] = $this->gettext('messageOpenIDConnectConfiguration');
             $_SESSION['message_error'] = $message_error;
