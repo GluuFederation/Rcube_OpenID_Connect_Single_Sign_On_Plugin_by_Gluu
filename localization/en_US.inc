@@ -104,7 +104,7 @@ $labels['manageAuthentication'] = '<h3>Manage Authentication</h3>
 
 
 $labels['doocumentation242'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>RoundCube GLUU SSO plugin</h1>
-                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/plugin.jpg" alt="image"></p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/plugin.jpg" alt="image"></p>
                 <p>RoundCube-GLUU-SSO plugin gives access for login to your RoundCube site, with the help of GLUU server.</p>
                 <p>There are already 2 versions of RoundCube-GLUU-SSO (2.4.2 and 2.4.3) plugins, each in its turn is working with oxD and GLUU servers.
                     For example if you are using RoundCube-gluu-sso-2.4.2 plugin, you need to connect with oxD-server-2.4.2.</p>
@@ -129,14 +129,14 @@ $labels['doocumentation242'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>Roun
                     <li>After the server starts, go to Step 4.</li>
                 </ol>
                 <h2><a id="Step_6_General_73"></a>Step 4. General</h2>
-                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/6.png" alt="General"></p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/6.png" alt="General"></p>
                 <ol>
                     <li>Admin Email: please add your or admin email address for registrating site in Gluu server.</li>
                     <li>Port number: choose that port which is using oxd-server (see in oxd-server/conf/oxd-conf.json file).</li>
                     <li>Click <code>Next</code> to continue.</li>
                 </ol>
                 <p>If You are successfully registered in gluu server, you will see bottom page.</p>
-                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/7.png" alt="oxD_id"></p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/7.png" alt="oxD_id"></p>
                 <p>For making sure go to your gluu server / OpenID Connect / Clients and search for your oxD ID</p>
                 <p>If you want to reset configurations click on Reset configurations button.</p>
                 <h2><a id="Step_8_OpenID_Connect_Configuration_89"></a>Step 5. OpenID Connect Configuration</h2>
@@ -146,9 +146,9 @@ $labels['doocumentation242'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>Roun
                     Scopes are need for getting loged in users information from gluu server.
                     Pay attention to that, which scopes you are using that are switched on in your gluu server.</p>
                 <p>In RoundCube-gluu-sso 2.4.2  you can only enable, disable and delete scope.
-                    <img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/8.png" alt="Scopes1"></p>
+                    <img src="https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/8.png" alt="Scopes1"></p>
                 <h3><a id="Custom_scripts_104"></a>Custom scripts.</h3>
-                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/10.png" alt="Customscripts"></p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/10.png" alt="Customscripts"></p>
                 <p>You can look all custom scripts in your gluu server / Configuration / Manage Custom Scripts / and enable login type, which type you want.
                     Custom Script represent itself the type of login, at this moment gluu server supports (U2F, Duo, Google +, Basic) types.</p>
                 <h3><a id="Pay_attention_to_that_111"></a>Pay attention to that.</h3>
@@ -161,7 +161,7 @@ $labels['doocumentation242'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>Roun
                 <h3><a id="Customize_Login_Icons_119"></a>Customize Login Icons</h3>
                 <p>Pay attention to that, if custom scripts are not enabled, nothing will be showed.
                     Customize shape, space between icons and size of the login icons.</p>
-                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/11.png" alt="RoundCubeConfiguration"></p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/11.png" alt="RoundCubeConfiguration"></p>
                 <h2><a id="Step_10_Show_icons_in_frontend_126"></a>Step 7. Show icons in frontend</h2>
-                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/12.png" alt="frontend"></p>';
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/12.png" alt="frontend"></p>';
 ?>
