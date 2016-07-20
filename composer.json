@@ -5,7 +5,7 @@
   "keywords": ["OpenID Connect","Single Sign On","SSO","Gluu","Google","Duo","U2F Fido token","Login" ],
   "homepage": "https://github.com/gluufederation/rcube_openid_connect_single_sign_on_plugin",
   "license": "MIT",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "authors": [
     {
       "name": "Vlad Karapetyan",
