@@ -1,4 +1,4 @@
-# Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu
+# RoundCube OpenID Connect Single Sign On Plugin by Gluu
 This plugin will enable you to authenticate users against any standard OpenID Connect Provider.
 
 You’ll need to also run a local oxd OpenID Connect client service. The oxd middleware service is easy to install, and makes it easier to keep up-to-date with the latest security fixes for OAuth2.
