@@ -1,7 +1,7 @@
 <?php
 
 $labels = array();
-$labels['gluu_sso'] = 'OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.3';
+$labels['gluu_sso'] = 'OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.2';
 $labels['General'] = 'General';
 $labels['OpenIDConnect'] = 'OpenID Connect Configuration';
 $labels['rConfig'] = 'RoundCube Configuration';
@@ -38,7 +38,7 @@ $labels['Instructions'] = '<h3>Instructions to Install oxd server</h3>
                                         <li>After the server starts, set the port number and your email in this page and click Next.</li>
                                     </ol>';
 $labels['adminEmail'] = 'Admin Email:';
-$labels['hederGluu'] = 'Use OpenID Connect to login by leveraging the oxd client service demon.';
+$labels['hederGluu'] = 'OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.2';
 $labels['portNumber'] = 'Port number:';
 $labels['Addacr'] = 'Add acr';
 $labels['Save'] = 'Save';
