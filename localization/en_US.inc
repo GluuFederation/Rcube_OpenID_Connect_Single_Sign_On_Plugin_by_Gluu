@@ -104,17 +104,14 @@ $labels['manageAuthentication'] = '<h3>Manage Authentication</h3>
 
 $labels['doocumentation243'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>RoundCube OpenID Connect Single Sign-On (SSO) Plugin by Gluu</h1>
                 <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/plugin.jpg" alt="image"></p>
-                <p>RoundCube-GLUU-SSO plugin gives access for login to your RoundCube site, with the help of GLUU server.</p>
-                <p>There are already 2 versions of RoundCube-GLUU-SSO (2.4.2 and 2.4.3) plugins, each in its turn is working with oxD and GLUU servers.
-                    For example if you are using RoundCube-gluu-sso-2.4.3 plugin, you need to connect with oxD-server-2.4.3.</p>
-                <p>Now I want to explain in details how to use plugin step by step.</p>
+                <p>This plugin will enable you to authenticate users against any standard OpenID Connect Provider. You’ll need to also run a local oxd OpenID Connect client service. The oxd middleware service is easy to install, and makes it easier to keep up-to-date with the latest security fixes for OAuth2. There are oxd plugins, modules and extennsions for many popular platforms and frameworks like: Wordpress, Magento, OpenCart, SugarCRM, SuiteCRM, Drupal, Roundcube, Spring Framework, Play Framework, Ruby on Rails and Python Flask. Using this plugin, you’ll be able to request a certain type of authentication using the OpenID Connect “acr” parameter. You may want to use strong two-factor authentication (2FA), or social login to Google, Facebook or other popular sites. Also supported is Super Gluu--a free mobile two factor authentication app. If you are also looking for a modern access management platform, you should consider the Gluu Server Community Edition. The Gluu Server includes an OpenID Connect Provider that will enable you to create local accounts for people in your domain, and to manage single sign-on (SSO) across your websites.</p>
                 <p>Plugin will not be working if your host does not have https://.</p>
                 <h2><a id="Step_1_Install_Gluuserver_13"></a>Step 1. Install Gluu-server</h2>
-                <p>(version 2.4.2 or 2.4.3)</p>
+                <p>(version 2.4.2)</p>
                 <p>If you want to use external gluu server, You can not do this step.</p>
                 <p><a target="_blank" href="https://www.gluu.org/docs/deployment/">Gluu-server installation gide</a>.</p>
-                <h2><a id="Step_2_Download_oxDserver_21"></a>Step 2. Download oxD-server</h2>
-                <p><a target="_blank" href="https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.3.Final/oxd-server-2.4.3.Final-distribution.zip">Download oxD-server-2.4.3.Final</a>.</p>
+                <h2><a id="Step_2_Download_oxDserver_21"></a>Step 2. Download oxd-server</h2>
+                <p><a target="_blank" href="https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.2.Final/oxd-server-2.4.2.Final-distribution.zip">Download oxD-server-2.4.2.Final</a>.</p>
                 <h2><a id="Step_3_Unzip_and_run_oXDserver_31"></a>Step 3. Unzip and run oXD-server</h2>
                 <ol>
                     <li>Unzip your oxD-server.</li>
@@ -139,13 +136,12 @@ $labels['doocumentation243'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>Roun
                 <p>For making sure go to your gluu server / OpenID Connect / Clients and search for your oxD ID</p>
                 <p>If you want to reset configurations click on Reset configurations button.</p>
                 <h2><a id="Step_8_OpenID_Connect_Configuration_89"></a>Step 5. OpenID Connect Configuration</h2>
-                <p>OpenID Connect Configuration page for RoundCube-gluu-sso 2.4.3.</p>
                 <h3><a id="Scopes_93"></a>Scopes.</h3>
                 <p>You can look all scopes in your gluu server / OpenID Connect / Scopes and understand the meaning of  every scope.
                     Scopes are need for getting loged in users information from gluu server.
                     Pay attention to that, which scopes you are using that are switched on in your gluu server.</p>
-                <p>In RoundCube-gluu-sso 2.4.3  you can add, enable, disable and delete scope.
-                    <img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/9.png" alt="Scopes1"></p>
+                <p>In version 2.4.2  you can enable, disable and delete scope.
+                    <img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/8.png" alt="Scopes1"></p>
                 <h3><a id="Custom_scripts_104"></a>Custom scripts.</h3>
                 <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/10.png" alt="Customscripts"></p>
                 <p>You can look all custom scripts in your gluu server / Configuration / Manage Custom Scripts / and enable login type, which type you want.
