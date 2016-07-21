@@ -107,7 +107,7 @@ $labels['doocumentation243'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>Roun
                 <p>Plugin gives access for login to your RoundCube site, with the help of GLUU server.</p>
                 <p>Plugin will not be working if your host does not have https://.</p>
                 <h2><a id="Step_1_Install_Gluuserver_13"></a>Step 1. Install Gluu-server</h2>
-                <p>(version 2.4.2 or 2.4.3)</p>
+                <p>(version 2.4.3)</p>
                 <p>If you want to use external gluu server, You can not do this step.</p>
                 <p><a target="_blank" href="https://www.gluu.org/docs/deployment/">Gluu-server installation gide</a>.</p>
                 <h2><a id="Step_2_Download_oxDserver_21"></a>Step 2. Download oxD-server</h2>
