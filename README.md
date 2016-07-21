@@ -14,11 +14,11 @@ If you want to use external gluu server, You can not do this step.
 
 [Gluu-server installation gide](https://www.gluu.org/docs/deployment/).
 
-## <a id="Step_2_Download_oxDserver_21"></a>Step 2\. Download oxD-server
+## <a id="Step_2_Download_oxDserver_21"></a>Step 2\. Download oxd-server
 
 [Download oxd-server-2.4.3.Final](https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.3.Final/oxd-server-2.4.3.Final-distribution.zip).
 
-## <a id="Step_3_Unzip_and_run_oXDserver_31"></a>Step 3\. Unzip and run oXD-server
+## <a id="Step_3_Unzip_and_run_oXDserver_31"></a>Step 3\. Unzip and run oxd-server
 
 1.  Unzip your oxd-server.
 2.  Open the command line and navigate to the extracted folder in the conf directory.
