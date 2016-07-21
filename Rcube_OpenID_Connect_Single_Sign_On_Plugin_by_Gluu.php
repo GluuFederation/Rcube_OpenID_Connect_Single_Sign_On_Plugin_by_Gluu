@@ -93,26 +93,27 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
               UNIQUE(`gluu_action`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         if(!json_decode($this->gluu_db_query_select('scopes'),true)){
-            $this->gluu_db_query_insert('scopes',json_encode(array("openid","profile","email","imapData")));
+            $this->gluu_db_query_insert('scopes',json_encode(array("openid","uma_protection","uma_authorization","profile","email","imapData")));
         }
         if(!json_decode($this->gluu_db_query_select('custom_scripts'),true)){
             $this->gluu_db_query_insert('custom_scripts',json_encode(array(
-                        array('name'=>'Google','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
                         array('name'=>'Basic','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
                         array('name'=>'Duo','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
-                        array('name'=>'U2F token','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
+                        array('name'=>'OxPush','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/oxpush2.png','value'=>'oxpush2'),
+                        array('name'=>'Duo','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/duo.png','value'=>'duo')
                     )
                 )
             );
         }
         if(!json_decode($this->gluu_db_query_select('oxd_config'),true)){
             $this->gluu_db_query_insert('oxd_config',json_encode(array(
+                        "op_host" => '',
                         "oxd_host_ip" => '127.0.0.1',
                         "oxd_host_port" =>8099,
                         "admin_email" => '',
                         "authorization_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
                         "logout_redirect_uri" => $base_url.'?_action=plugin.gluu_sso-login-from-gluu',
-                        "scope" => ["openid","profile","email","imapData"],
+                        "scope" => ["openid","uma_protection","uma_authorization","profile","email","imapData"],
                         "grant_types" =>["authorization_code"],
                         "response_types" => ["code"],
                         "application_type" => "web",
@@ -444,6 +445,14 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td><b><font color="#FF0000">*</font>'.$this->gettext('gluuServerUrl').'</b></td>
+                                            <td><input class="" type="url" name="gluuServerUrl" id="gluuServerUrl"
+                                                       autofocus="true" required placeholder="Insert gluu server url"
+                                                       style="width:400px;"
+                                                       value="'.$oxd_config['op_host'].'"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td><b><font color="#FF0000">*</font>'.$this->gettext('portNumber').'</b></td>
                                             <td>
                                                 <input class="" type="number" name="oxd_port" min="0" max="65535"
@@ -521,7 +530,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                                             <tr class="wrapper-trr">';
         foreach ($get_scopes as $scop){
             $html.='<td class="value">';
-            if ($scop == 'openid'){
+            if ($scop == 'openid' || $scop == 'uma_protection' || $scop == 'uma_authorization'){
                 $html.='<input ';
                 if (!$oxd_id) $html.=' disabled ';
                 $html.='type="hidden"  name="scope[]"  ';
@@ -535,7 +544,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
             $html.=' type="checkbox"  name="scope[]" ';
             if ($oxd_config && in_array($scop, $oxd_config['scope'])) {
                 $html.=' checked '; }   $html.='id="'.$scop.'" value="'.$scop.'" ';
-            if ($scop == 'openid') $html.= ' disabled   />';
+            if ($scop == 'openid' || $scop == 'uma_protection' || $scop == 'uma_authorization') $html.= ' disabled   />';
             $html.= '<label for="'.$scop.'">'.$scop.'</label>
                                                     </td>';
         }
@@ -567,7 +576,15 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                                                             <input type="hidden"
                                                                    value="'.$scop.'"
                                                                    name="value_scope"/>';
-            if ($scop != 'openid'){
+            if ($scop == 'openid'){
+
+            }
+            elseif ($scop == 'uma_protection'){
+
+            }
+            elseif ($scop == 'uma_authorization'){
+
+            }else{
                 $html.= '<input  style="width: 100px; background-color: red !important; cursor: pointer"
                                                                         type="submit"
                                                                         class="button button-primary "';
@@ -997,6 +1014,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_register_page' )               !== false ) {
 
             $config_option = json_encode(array(
+                "op_host" => $_POST['gluuServerUrl'],
                 "oxd_host_ip" => '127.0.0.1',
                 "oxd_host_port" =>$_POST['oxd_port'],
                 "admin_email" => $_POST['loginemail'],
@@ -1011,6 +1029,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
             ));
             $this->gluu_db_query_update('oxd_config', $config_option);
             $config_option = array(
+                "op_host" => $_POST['gluuServerUrl'],
                 "oxd_host_ip" => '127.0.0.1',
                 "oxd_host_port" =>$_POST['oxd_port'],
                 "admin_email" => $_POST['loginemail'],
@@ -1024,6 +1043,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                 "acr_values" => [],
             );
             $register_site = new Register_site();
+            $register_site->setRequestOpHost($config_option['op_host']);
             $register_site->setRequestAcrValues($config_option['acr_values']);
             $register_site->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
             $register_site->setRequestRedirectUris($config_option['redirect_uris']);

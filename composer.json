@@ -2,10 +2,10 @@
   "name": "gluufederation/rcube_openid_connect_single_sign_on_plugin_by_gluu",
   "type": "roundcube-plugin",
   "description": "This plugin will enable you to authenticate users against any standard OpenID Connect Provider. You’ll need to also run a local oxd OpenID Connect client service. The oxd middleware service is easy to install, and makes it easier to keep up-to-date with the latest security fixes for OAuth2. There are oxd plugins, modules and extennsions for many popular platforms and frameworks like: Wordpress, Magento, OpenCart, SugarCRM, SuiteCRM, Drupal, Roundcube, Spring Framework, Play Framework, Ruby on Rails and Python Flask. Using this plugin, you’ll be able to request a certain type of authentication using the OpenID Connect “acr” parameter. You may want to use strong two-factor authentication (2FA), or social login to Google, Facebook or other popular sites. Also supported is Super Gluu--a free mobile two factor authentication app. If you are also looking for a modern access management platform, you should consider the Gluu Server Community Edition. The Gluu Server includes an OpenID Connect Provider that will enable you to create local accounts for people in your domain, and to manage single sign-on (SSO) across your websites.",
-  "keywords": ["OpenID Connect","Single Sign On","SSO","Gluu","Duo","U2F Fido token","Login", "oauth"],
+  "keywords": ["OpenID Connect","Single Sign On","OxPush","SSO","Gluu","Google","Duo","U2F Fido token","Login" ],
   "homepage": "https://github.com/gluufederation/rcube_openid_connect_single_sign_on_plugin",
   "license": "MIT",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "authors": [
     {
       "name": "Vlad Karapetyan",
@@ -36,16 +36,17 @@
   "support": {
     "email": "support@gluu.org",
     "issues": "https://github.com/gluufederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/issues",
-    "source": "https://github.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/tree/v2.4.3",
+    "source": "https://github.com/gluufederation/rcube_openid_connect_single_sign_on_plugin_by_gluu",
     "wiki": "https://oxd.gluu.org/docs/plugin/roundcube/",
     "irc": "irc://irc.freenode.org/composer",
-    "docs": "https://github.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/tree/v2.4.3#readme"
+    "docs": "https://oxd.gluu.org/docs/plugin/roundcube/"
   },
   "extra":
   {
     "roundcube": {
       "min-version": "0.6.0",
-      "max-version": "10.21"
+      "max-version": "10.21",
+      "sql-dir": "SQL"
     }
   }
 }

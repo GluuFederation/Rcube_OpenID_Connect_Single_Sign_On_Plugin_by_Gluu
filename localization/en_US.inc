@@ -1,7 +1,7 @@
 <?php
 
 $labels = array();
-$labels['gluu_sso'] = 'OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.3';
+$labels['gluu_sso'] = 'OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.4';
 $labels['General'] = 'General';
 $labels['OpenIDConnect'] = 'OpenID Connect Configuration';
 $labels['rConfig'] = 'RoundCube Configuration';
@@ -35,10 +35,11 @@ $labels['Instructions'] = '<h3>Instructions to Install oxd server</h3>
                                         <li>Open the command line and navigate to the extracted folder in the <b>bin</b> directory.</li>
                                         <li>For Linux environment, run <b>sh oxd-start.sh &amp;</b></li>
                                         <li>For Windows environment, run <b>oxd-start.bat</b></li>
-                                        <li>After the server starts, set the port number and your email in this page and click Next.</li>
+                                        <li>After the server starts, set the port number, your Gluu server url and your email in this page and click Next.</li>
                                     </ol>';
 $labels['adminEmail'] = 'Admin Email:';
-$labels['hederGluu'] = 'OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.3';
+$labels['gluuServerUrl'] = 'Gluu Server URL:';
+$labels['hederGluu'] = 'OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.4';
 $labels['portNumber'] = 'Port number:';
 $labels['Addacr'] = 'Add acr';
 $labels['Save'] = 'Save';
@@ -107,27 +108,27 @@ $labels['doocumentation243'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>Roun
                 <p>Plugin gives access for login to your RoundCube site, with the help of GLUU server.</p>
                 <p>Plugin will not be working if your host does not have https://.</p>
                 <h2><a id="Step_1_Install_Gluuserver_13"></a>Step 1. Install Gluu-server</h2>
-                <p>(version 2.4.3)</p>
+                <p>(version 2.4.4)</p>
                 <p>If you want to use external gluu server, You can not do this step.</p>
                 <p><a target="_blank" href="https://www.gluu.org/docs/deployment/">Gluu-server installation gide</a>.</p>
                 <h2><a id="Step_2_Download_oxDserver_21"></a>Step 2. Download oxD-server</h2>
-                <p><a target="_blank" href="https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.3.Final/oxd-server-2.4.3.Final-distribution.zip">Download oxD-server-2.4.3.Final</a>.</p>
+                <p><a target="_blank" href="https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.4.Final/oxd-server-2.4.4.Final-distribution.zip">Download oxd-server-2.4.4.Final</a>.</p>
                 <h2><a id="Step_3_Unzip_and_run_oXDserver_31"></a>Step 3. Unzip and run oXD-server</h2>
                 <ol>
                     <li>Unzip your oxD-server.</li>
                     <li>Open the command line and navigate to the extracted folder in the conf directory.</li>
                     <li>Open oxd-conf.json file.</li>
                     <li>If your server is using 8099 port, please change “port” number to free port, which is not used.</li>
-                    <li>Set parameter “op_host”:“Your gluu-server-url (internal or external)”</li>
                     <li>Open the command line and navigate to the extracted folder in the bin directory.</li>
                     <li>For Linux environment, run sh <a href="http://oxd-start.sh">oxd-start.sh</a>&amp;.</li>
                     <li>For Windows environment, run oxd-start.bat.</li>
                     <li>After the server starts, go to Step 4.</li>
                 </ol>
                 <h2><a id="Step_6_General_73"></a>Step 4. General</h2>
-                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/6.png" alt="General"></p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/15.png" alt="General"></p>
                 <ol>
                     <li>Admin Email: please add your or admin email address for registrating site in Gluu server.</li>
+                    <li>Gluu server url: please insert Gluu server url.</li>
                     <li>Port number: choose that port which is using oxd-server (see in oxd-server/conf/oxd-conf.json file).</li>
                     <li>Click <code>Next</code> to continue.</li>
                 </ol>
@@ -140,7 +141,7 @@ $labels['doocumentation243'] = '<h1><a id="RoundCube_GLUU_SSO_plugin_0"></a>Roun
                 <p>You can look all scopes in your gluu server / OpenID Connect / Scopes and understand the meaning of  every scope.
                     Scopes are need for getting loged in users information from gluu server.
                     Pay attention to that, which scopes you are using that are switched on in your gluu server.</p>
-                <p>In version 2.4.3  you can add, enable, disable and delete scope.
+                <p>In version 2.4.4  you can add, enable, disable and delete scope.
                     <img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/9.png" alt="Scopes1"></p>
                 <h3><a id="Custom_scripts_104"></a>Custom scripts.</h3>
                 <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-RoundCube-plugin/master/docu/10.png" alt="Customscripts"></p>
