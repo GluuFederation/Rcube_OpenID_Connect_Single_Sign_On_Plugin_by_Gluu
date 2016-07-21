@@ -97,10 +97,10 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         }
         if(!json_decode($this->gluu_db_query_select('custom_scripts'),true)){
             $this->gluu_db_query_insert('custom_scripts',json_encode(array(
-                        array('name'=>'Google','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
-                        array('name'=>'Basic','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
-                        array('name'=>'Duo','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
-                        array('name'=>'U2F token','image'=>'plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
+                        array('name'=>'Google','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/google.png','value'=>'gplus'),
+                        array('name'=>'Basic','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/basic.png','value'=>'basic'),
+                        array('name'=>'Duo','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/duo.png','value'=>'duo'),
+                        array('name'=>'U2F token','image'=>'plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/u2f.png','value'=>'u2f')
                     )
                 )
             );
@@ -466,7 +466,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                     <div>
                         <div>
                             <div class="about">
-                                <h3 style="color: #45a8ff" class="sc"><img style=" height: 45px; margin-left: 20px;" src="plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/ox.png"/>&nbsp; server config</h3>
+                                <h3 style="color: #45a8ff" class="sc"><img style=" height: 45px; margin-left: 20px;" src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/ox.png"/>&nbsp; server config</h3>
                             </div>
                         </div>
                         <div class="entry-edit" >
@@ -507,7 +507,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                             <div>
                                 <div class="about">
                                     <br/>
-                                    <h3 style="color: #00aa00" class="sc"><img style="height: 45px; margin-left: 30px;" src="plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/gl.png"/> &nbsp; server config
+                                    <h3 style="color: #00aa00" class="sc"><img style="height: 45px; margin-left: 30px;" src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/> &nbsp; server config
                                     </h3>
                                 </div>
                             </div>
@@ -1145,7 +1145,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                             }
                         }
                         if($error){
-                            $target_dir = "plugins/Gluu_sso_243/GluuOxd_Openid/images/icons/";
+                            $target_dir = "plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/";
                             $target_file = $target_dir . basename($_FILES['images_'.$i]["name"]);
                             $uploadOk = 1;
                             $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
