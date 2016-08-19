@@ -139,7 +139,8 @@ class Get_authorization_url extends Client_OXD_RP
     {
         $this->params = array(
             "oxd_id" => $this->getRequestOxdId(),
-            "acr_values" => $this->getRequestAcrValues()
+            "acr_values" => $this->getRequestAcrValues(),
+            "prompt" => 'login'
 
         );
     }

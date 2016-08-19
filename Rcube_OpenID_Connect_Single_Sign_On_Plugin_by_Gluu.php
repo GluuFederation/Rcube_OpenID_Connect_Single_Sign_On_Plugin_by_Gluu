@@ -117,7 +117,6 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                         "grant_types" =>["authorization_code"],
                         "response_types" => ["code"],
                         "application_type" => "web",
-                        "redirect_uris" => [ $base_url.'?_action=plugin.gluu_sso-login-from-gluu' ],
                         "acr_values" => [],
                     )
                 )
@@ -1024,7 +1023,6 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                 "grant_types" =>["authorization_code"],
                 "response_types" => ["code"],
                 "application_type" => "web",
-                "redirect_uris" => [ $base_url.'?_action=plugin.gluu_sso-login-from-gluu'],
                 "acr_values" => [],
             ));
             $this->gluu_db_query_update('oxd_config', $config_option);
@@ -1039,14 +1037,12 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
                 "grant_types" =>["authorization_code"],
                 "response_types" => ["code"],
                 "application_type" => "web",
-                "redirect_uris" => [ $base_url.'?_action=plugin.gluu_sso-login-from-gluu' ],
                 "acr_values" => [],
             );
             $register_site = new Register_site();
             $register_site->setRequestOpHost($config_option['op_host']);
             $register_site->setRequestAcrValues($config_option['acr_values']);
             $register_site->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
-            $register_site->setRequestRedirectUris($config_option['redirect_uris']);
             $register_site->setRequestGrantTypes($config_option['grant_types']);
             $register_site->setRequestResponseTypes(['code']);
             $register_site->setRequestLogoutRedirectUri($config_option['logout_redirect_uri']);
@@ -1201,7 +1197,6 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
             $update_site_registration->setRequestOxdId($this->gluu_db_query_select("oxd_id"));
             $update_site_registration->setRequestAcrValues($config_option['acr_values']);
             $update_site_registration->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
-            $update_site_registration->setRequestRedirectUris($config_option['redirect_uris']);
             $update_site_registration->setRequestGrantTypes($config_option['grant_types']);
             $update_site_registration->setRequestResponseTypes(['code']);
             $update_site_registration->setRequestLogoutRedirectUri($config_option['logout_redirect_uri']);
