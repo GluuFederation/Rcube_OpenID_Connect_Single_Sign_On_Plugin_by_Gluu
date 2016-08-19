@@ -1,81 +1,77 @@
-# <a id="RoundCube_GLUU_SSO_plugin_0"></a>RoundCube OpenID Connect Single Sign-On (SSO) Plugin by Gluu
+[TOC]
+
+# RoundCube OpenID Connect Single Sign On (SSO) Plugin By Gluu
 
 ![image](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/plugin.jpg)
 
-RoundCube OpenID Connect Single Sign-On (SSO) Plugin by Gluu gives access for login to your RoundCube site, with the help of GLUU server.
+Gluu's RoundCube OpenID Connect Single Sign On (SSO) Plugin will enable you to authenticate users against any standard OpenID Connect Provider (OP). If you don't already have an OP you can [deploy the free open source Gluu Server](https://gluu.org/docs/deployment).  
 
-Plugin will not be working if your host does not have https://.
+## Requirements
+In order to use the RoundCube plugin, you will need to have deployed a standard OP like the Gluu Server and the oxd Server.
 
-## <a id="Step_1_Install_Gluuserver_13"></a>Step 1\. Install Gluu-server
+* [Gluu Server Installation Guide](https://www.gluu.org/docs/deployment/).
 
-(version 2.4.4)
+* [oxd Server Installation Guide](https://oxd.gluu.org/docs/oxdserver/install/)
 
-If you want to use external gluu server, You can not do this step.
 
-[Gluu-server installation gide](https://www.gluu.org/docs/deployment/).
+## Installation
+ 
+### Step 1: Download
 
-## <a id="Step_2_Download_oxDserver_21"></a>Step 2\. Download oxd-server
+[Github source](https://github.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/archive/v2.4.4.zip).
 
-[Download oxd-server-2.4.4.Final](https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.4.Final/oxd-server-2.4.4.Final-distribution.zip).
+[Link to RoundCube repository](https://plugins.roundcube.net/packages/gluufederation/rcube_openid_connect_single_sign_on_plugin_by_gluu)
 
-## <a id="Step_3_Unzip_and_run_oXDserver_31"></a>Step 3\. Unzip and run oxd-server
+To install RoundCube OpenID Connect Single Sign On (SSO) Plugin By Gluu via Composer, execute the following command 
 
-1.  Unzip your oxd-server.
-2.  Open the command line and navigate to the extracted folder in the conf directory.
-3.  Open oxd-conf.json file.
-4.  If your server is using 8099 port, please change “port” number to free port, which is not used.
-5.  Open the command line and navigate to the extracted folder in the bin directory.
-6.  For Linux environment, run sh [oxd-start.sh](http://oxd-start.sh)&.
-7.  For Windows environment, run oxd-start.bat.
-8.  After the server starts, go to Step 4.
+```
+$ composer install `composer require "gluufederation/rcube_openid_connect_single_sign_on_plugin_by_gluu": "2.4.4"`
 
-## <a id="Step_6_General_73"></a>Step 4\. General
+```
 
-![General](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/15.png)
+### Step 2: General
+![General](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/6.png)  
 
-1.  Admin Email: please add your or admin email address for registrating site in Gluu server.
-2.  After the server starts, set the port number, your Gluu server url and your email in this page and click Next.
-3.  Port number: choose that port which is using oxd-server (see in oxd-server/conf/oxd-conf.json file).
-4.  Click `Next` to continue.
+1. Admin Email: please add your or admin email address for registrating site in Gluu server.
+2. Gluu Server URL: please insert your Gluu server URL.
+3. Port number: choose that port which is using oxd-server (see in oxd-server/conf/oxd-conf.json file).
+4. Click next to continue.
 
 If You are successfully registered in gluu server, you will see bottom page.
 
-![oxD_id](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/7.png)
+![Oxd_id](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/7.png)
 
-For making sure go to your gluu server / OpenID Connect / Clients and search for your oxd ID
-
-If you want to reset configurations click on Reset configurations button.
-
-## <a id="Step_8_OpenID_Connect_Configuration_89"></a>Step 5\. OpenID Connect Configuration
-
-### <a id="Scopes_93"></a>Scopes.
-
-You can look all scopes in your gluu server / OpenID Connect / Scopes and understand the meaning of every scope. Scopes are need for getting loged in users information from gluu server. Pay attention to that, which scopes you are using that are switched on in your gluu server.
-
-In version 2.4.4 you can add, enable, disable and delete scope. ![Scopes1](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/9.png)
-
-### <a id="Custom_scripts_104"></a>Custom scripts.
-
-![Customscripts](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/10.png)
-
-You can look all custom scripts in your gluu server / Configuration / Manage Custom Scripts / and enable login type, which type you want. Custom Script represent itself the type of login, at this moment gluu server supports (U2F, Duo, Google +, Basic) types.
-
-### <a id="Pay_attention_to_that_111"></a>Pay attention to that.
-
-1.  Which custom script you enable in your RoundCube site in order it must be switched on in gluu server too.
-2.  Which custom script you will be enable in OpenID Connect Configuration page, after saving that will be showed in RoundCube Configuration page too.
-3.  When you create new custom script, both fields are required.
-
-## <a id="Step_9_RoundCube_Configuration_117"></a>Step 6\. RoundCube Configuration
-
-### <a id="Customize_Login_Icons_119"></a>Customize Login Icons
-
-Pay attention to that, if custom scripts are not enabled, nothing will be showed. Customize shape, space between icons and size of the login icons.
-
-![RoundCubeConfiguration](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/11.png)
-
-## <a id="Step_10_Show_icons_in_frontend_126"></a>Step 7\. Show icons in frontend
-
-![frontend](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/12.png)
+To make sure everything is configured properly, login to your Gluu Server and navigate to the OpenID Connect > Clients page. Search for your `oxd id`.
 
 
+### Step 3: OpenID Connect Provider (OP) Configuration
+
+#### Scopes
+Scopes are groups of user attributes that are sent from your OP (in this case, the Gluu Server) to the application during login and enrollment. You can view all available scopes in your Gluu Server by navigating to the OpenID Connect > Scopes intefrace. 
+
+In the Plugin interface you can enable, disable and delete scopes. You can also add new scopes. If/when you add new scopes via the plugin, be sure to also add the same scopes in your gluu server. 
+![Scopes2](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/9.png) 
+
+#### Authentication
+To specify the desired authentication mechanism navigate to the Configuration > Manage Custom Scripts menu in your Gluu Server. From there you can enable one of the out-of-the-box authentication mechanisms, such as password, U2F device (like yubikey), or mobile authentication. You can learn more about the Gluu Server authentication capabilities in the [docs](https://gluu.org/docs/multi-factor/intro/).
+
+![Customscripts](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/10.png) 
+
+Note:    
+- The authentication mechanism specified in your RoundCube plugin page must match the authentication mechanism specified in your Gluu Server.     
+- After saving the authentication mechanism in your Gluu Server, it will be displayed in the RoundCube plugin configuration page too.      
+- If / when you create a new custom script, both fields are required. 
+
+### Step 4:RoundCube Configuration
+
+#### Customize Login Icons
+ 
+If custom scripts are not enabled, nothing will be showed. Customize shape, space between icons and size of the login icons.
+
+![RoundCubeConfiguration](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/11.png)  
+
+### Step 5:Show icons in frontend
+
+Once you've configured all the options, you should see your supported authentication mechanisms on your default RoundCube login page like the screenshot below.
+
+![frontend](https://raw.githubusercontent.com/GluuFederation/rcube_openid_connect_single_sign_on_plugin_by_gluu/master/docu/12.png) 
