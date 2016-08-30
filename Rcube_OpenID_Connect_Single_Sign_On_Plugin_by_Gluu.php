@@ -1011,7 +1011,11 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         $db = $RCMAIL->db;
 
         if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_register_page' )               !== false ) {
-
+            if(!isset($_SERVER['HTTPS']) or $_SERVER['HTTPS'] != "on") {
+                $_SESSION['message_error'] = 'OpenID Connect requires https. This plugin will not work if your website uses http only.';
+                $RCMAIL->output->redirect('plugin.gluu_sso');
+                return;
+            }
             $config_option = json_encode(array(
                 "op_host" => $_POST['gluuServerUrl'],
                 "oxd_host_ip" => '127.0.0.1',
