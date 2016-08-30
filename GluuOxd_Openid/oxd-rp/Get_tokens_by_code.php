@@ -232,9 +232,7 @@ class Get_tokens_by_code extends Client_OXD_RP
     {
         $this->params = array(
             "oxd_id" => $this->getRequestOxdId(),
-            "code" => $this->getRequestCode(),
-            "state" => $this->getRequestState(),
-            "scopes" => $this->getRequestScopes()
+            "code" => $this->getRequestCode()
         );
     }
 
