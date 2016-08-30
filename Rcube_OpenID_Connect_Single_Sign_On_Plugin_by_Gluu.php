@@ -1324,6 +1324,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
             $_SESSION['user_oxd_id_token']  = $get_tokens_by_code->getResponseIdToken();
             $_SESSION['user_oxd_access_token']  = $get_tokens_by_code->getResponseAccessToken();
             $_SESSION['session_state'] = $_REQUEST['session_state'];
+            $_SESSION['state'] = $_REQUEST['state'];
             $address = $get_user_info_array->address[0];
             $address_object = json_decode($address);
             $reg_email = '';
