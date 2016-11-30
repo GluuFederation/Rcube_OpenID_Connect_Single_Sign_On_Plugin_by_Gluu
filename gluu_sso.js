@@ -1,60 +1,36 @@
-$(document).ready(function(){
+jQuery(document).ready(function(){
     var text = '<li class="listitem" id="settingsgluusso">' +
-        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso" >OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.4</a></li>';
-    $('#settings-sections #settings-tabs .listing').append(text);
+        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso" >OpenID Connect</a></li>';
+    jQuery('#settings-sections #settings-tabs .listing').append(text);
     var text = '<span class="tablink gluusso " id="settingstabgluusso">' +
-        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso">OpenID Connect Single Sign-On (SSO) Plugin by Gluu 2.4.4</a></span>';
-    $('#tabsbar').append(text);
+        '<a href="./?_task=settings&amp;_action=plugin.gluu_sso">OpenID Connect</a></span>';
+    jQuery('#tabsbar').append(text);
 
 });
-
-var base_url = rcmail.gui_objects.base_url;
-function socialLogin(appName){
-    window.location.href =base_url+'?_action=plugin.gluu_sso-login&app_name='+appName;
-}
-if (window.rcmail) {
-
-    var loginTheme = rcmail.gui_objects.loginTheme;
-    var oxd_id = rcmail.gui_objects.oxd_id;
-    var iconSpace = rcmail.gui_objects.iconSpace;
-    var iconCustomSize = rcmail.gui_objects.iconCustomSize;
-    var loginCustomTheme = rcmail.gui_objects.loginCustomTheme;
-    var array = jQuery.parseJSON(rcmail.gui_objects.custom_scripts_enabled);
-    rcmail.addEventListener('init', function() {
-        var	text = '';
-        if(oxd_id) {
-            text += "<div>";
-            text += '<style>' +
-                '.gluuox_login_icon_preview{' +
-                'width:35px;' +
-                'cursor:pointer;' +
-                'display:inline;' +
-                '}' +
-                '.customer-account-login .page-title{' +
-                'margin-top: -100px !important;' +
-                '}' +
-                '</style>';
-            if (loginTheme != 'longbutton') {
-                text += '<style>.gluuOx_custom_login_icon_preview{cursor:pointer;}</style>';
-                if (loginTheme == 'circle') {
-                    text += '<style> .gluuox_login_icon_preview, .gluuOx_custom_login_icon_preview{border-radius: 999px !important;}</style>';
-                } else if (loginTheme == 'oval') {
-                    text += '<style> .gluuox_login_icon_preview, .gluuOx_custom_login_icon_preview{border-radius: 5px !important;}</style>';
-                }
-                if (loginCustomTheme != 'custom') {
-                    var cl = '';
-                    array.forEach(function (object) {
-                        if (object.enable == 1) {
-                            cl = "socialLogin('" + object.value + "')";
-                            text += '<img class="gluuox_login_icon_preview" id="gluuox_login_icon_preview_' + object.value + '" src="' + object.image + '"' +
-                                'style="margin-left: ' + iconSpace + 'px;  height:' + iconCustomSize + 'px; width:' + iconCustomSize + 'px;" onclick="' + cl + '"  />';
+jQuery(document ).ready(function() {
+        var oxd_id = rcmail.gui_objects.oxd_id;
+        var get_auth_url = rcmail.gui_objects.get_auth_url;
+        var gluu_send_user_check = rcmail.gui_objects.gluu_send_user_check;
+        var gluu_is_port_working = rcmail.gui_objects.gluu_is_port_working;
+        if(gluu_is_port_working){
+            if (oxd_id && gluu_send_user_check == 0) {
+                jQuery('form').before("<br/><label style='font-weight: 700;white-space: nowrap;color: #cecece;text-shadow: 0 1px 1px black;text-align: right;font-size: medium;padding-left: 15px;text-indent: -15px;' for='OpenID'><input type='radio' style='width: 13px;height: 13px; padding: 0; margin:0; vertical-align: bottom;position: relative; top: -1px;overflow: hidden;' name='radio' id='OpenID' value='Yes' /> Login by OpenID Provider </label><br/>" +
+                    "<label for='base' style='font-weight: 700;white-space: nowrap;color: #cecece;text-shadow: 0 1px 1px black;text-align: right;font-size: medium;padding-left: 15px;text-indent: -15px;'><input type='radio' style='width: 13px;height: 13px; padding: 0; margin:0; vertical-align: bottom;position: relative; top: -1px;overflow: hidden;' name='radio' id='base' value='No' /> Show login form </label><br/>");
+                jQuery('form').before('<br/><a href="'+get_auth_url+'" style="background:green; border-radius: 0px;font-weight: 700;white-space: nowrap;color: #cecece;text-shadow: 0 1px 1px black;font-size: medium" class="btn btn-block" id="gluu_login">Login by OpenID Provider</a><br/>');
+                jQuery('form').hide();
+                jQuery('input:radio[name="radio"]').change(
+                    function () {
+                        if (jQuery(this).is(':checked') && jQuery(this).val() == 'Yes') {
+                            jQuery('#gluu_login').show();
+                            jQuery('form').hide();
+                        } else {
+                            jQuery('#gluu_login').hide();
+                            jQuery('form').show();
                         }
                     });
-
-                }
+                jQuery('#OpenID').attr('checked', true);
+            }else if(oxd_id &&  gluu_send_user_check == 1){
+                window.location = get_auth_url;
             }
-            $('.box-inner').append(text);
-            $('.boxcontent').append(text);
         }
-    });
-}
+});

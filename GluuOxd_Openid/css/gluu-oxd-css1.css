@@ -1,11 +1,3 @@
-body.noscroll, #pluginbody {
-    /* revert on iPhone (#1490551) */
-    overflow: visible !important;
-}
-#pluginbody{
-    position: relative !important;
-    width: 84% !important;
-}
 .set_oxd_config {
     background-color: #00d600 !important;
     margin: 30px;
@@ -161,6 +153,9 @@ a:focus, a:hover {
     min-height: 395px
 }
 
+td, th {
+    padding: 10px 15px
+}
 
 td {
     color: #6f6f6f

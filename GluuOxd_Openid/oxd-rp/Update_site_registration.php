@@ -298,6 +298,8 @@ class Update_site_registration extends Client_OXD_RP
         $this->request_authorization_redirect_uri = $request_authorization_redirect_uri;
     }
 
+
+
     /**
      * @return array
      */
@@ -384,15 +386,15 @@ class Update_site_registration extends Client_OXD_RP
             "authorization_redirect_uri" => $this->getRequestAuthorizationRedirectUri(),
             "oxd_id" => $this->getRequestOxdId(),
             "post_logout_redirect_uri" => $this->getRequestLogoutRedirectUri(),
-            "application_type" => $this->getRequestApplicationType(),
+            "application_type" => 'web',
             "acr_values" => $this->getRequestAcrValues(),
             "scope" => $this->getRequestScope(),
             "client_jwks_uri" => $this->getRequestClientJwksUri(),
             "client_token_endpoint_auth_method" => $this->getRequestClientTokenEndpointAuthMethod(),
             "client_request_uris" => $this->getRequestClientRequestUris(),
             "contacts" => $this->getRequestContacts(),
-            "grant_types" => $this->getRequestGrantTypes(),
-            "response_types"=> $this->getRequestResponseTypes(),
+            "grant_types" => ["authorization_code"],
+            "response_types"=> ["code"],
             "client_secret_expires_at"=> 3080736637943,
             "client_logout_uris"=> [$this->getRequestClientLogoutUris()]
         );
