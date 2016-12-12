@@ -1,4 +1,4 @@
-
+ 
 # Roundcube OpenID Connect Single Sign-On (SSO) Plugin By Gluu
 
 ![image](https://raw.githubusercontent.com/GluuFederation/rcube_oc_sso_plugin_by_gluu/master/plugin.jpg)
