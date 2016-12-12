@@ -7,7 +7,7 @@
  +-----------------------------------------------------------------------+
  */
 
-class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
+class rcube_oc_sso_plugin_by_gluu extends rcube_plugin
 {
     public $task = 'login|logout|settings';
     private $app;
@@ -64,13 +64,7 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
     }
     public function admin_html()
     {
-        $base_url = @($_SERVER["HTTPS"] != 'on') ? 'http://' : 'https://';
-        $url = $_SERVER['REQUEST_URI']; //returns the current URL
-        $parts = explode('/', $url);
-        $base_url .= $_SERVER['SERVER_NAME'];
-        for ($i = 0; $i < count($parts) - 1; $i++) {
-            $base_url .= $parts[$i] . "/";
-        }
+        $base_url = $this->getBaseUrl();
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
         $db = $RCMAIL->db;
         $result = $db->query("CREATE TABLE IF NOT EXISTS `gluu_table` (
@@ -158,9 +152,9 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         $message_success = $this->gluu_db_query_select('message_success');
         $openid_error = $this->gluu_db_query_select('openid_error');
         $html='
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
 <script type="application/javascript">
     jQuery(document).ready(function() {
 
@@ -183,17 +177,6 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
         if($gluu_users_can_register == 2){
             $html.='jQuery("#p_role").children().prop(\'disabled\',false);
         jQuery("#p_role *").prop(\'disabled\',false);';
-        }
-        else if($gluu_users_can_register == 3){
-            $html.='jQuery("#p_role").children().prop(\'disabled\',true);
-        jQuery("#p_role *").prop(\'disabled\',true);
-        jQuery("input[name=\'gluu_new_role[]\']").each(function(){
-            var striped = jQuery(\'#p_role\');
-            var value =  jQuery(this).attr("value");
-            jQuery(\'<p><input type="hidden" name="gluu_new_role[]"  value= "\'+value+\'"/></p>\').appendTo(striped);
-        });
-        jQuery("#UserType").prop(\'disabled\',true);';
-
         }
         else{
             $html.='jQuery("#p_role").children().prop(\'disabled\',true);
@@ -262,8 +245,8 @@ class Rcube_OpenID_Connect_Single_Sign_On_Plugin_by_Gluu extends rcube_plugin
     });
 </script>';
 $html.='
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<script src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<script src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <div class="mo2f_container">
     <div class="container">
@@ -278,11 +261,11 @@ $html.='
         }
         $html .= '</div>
         <ul class="navbar navbar-tabs">
-            <li class="active" id="account_setup"><a href="?_task=settings&_action=plugin.gluu_sso">General</a></li>';
+            <li class="active" id="account_setup"><a href="'.$base_url.''.$base_url.'?_task=settings&_action=plugin.gluu_sso">General</a></li>';
         if (!$this->gluu_is_oxd_registered()) {
             $html .= '<li id="social-sharing-setup"><a  style="pointer-events: none; cursor: default;" >OpenID Connect Configuration</a></li>';
         } else {
-            $html .= '<li id="social-sharing-setup"><a href="?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
+            $html .= '<li id="social-sharing-setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
         }
         $html .= '<li id=""><a data-method="#configopenid" href="https://oxd.gluu.org/docs/plugin/roundcube/" target="_blank">Documentation</a></li>';
         $html .= '</ul>
@@ -292,9 +275,9 @@ $html.='
             $html .= '<div class="page" id="accountsetup">
                     <div class="mo2f_table_layout">
                         <form id="register_GluuOxd" name="f" method="post"
-                              action="?_task=settings&_action=plugin.gluu_sso-save">
+                              action="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save">
                             <input type="hidden" name="form_key" value="general_register_page"/>
-                            <div class="login_GluuOxd">
+                            <div class="login_GluuOxd"> 
                                 <br/>
                                 <div  style="padding-left: 20px;">Register your site with any standard OpenID Provider (OP). If you need an OpenID Provider you can deploy the <a target="_blank" href="https://gluu.org/docs/deployment/"> free open source Gluu Server.</a></div>
                                 <hr>
@@ -305,7 +288,7 @@ $html.='
                                     <table class="table">
 
                                         <tr>
-                                            <td><b>URI of the OpenID Provider:</b></td>
+                                            <td  style="width: 250px"><b>URI of the OpenID Provider:</b></td>
                                             <td><input class="" type="url" name="gluu_provider" id="gluu_provider"
                                                        autofocus="true"  placeholder="Enter URI of the OpenID Provider."
                                                        style="width:400px;"
@@ -313,7 +296,7 @@ $html.='
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><b>Custom URI after logout:</b></td>
+                                            <td  style="width: 250px"><b>Custom URI after logout:</b></td>
                                             <td><input class="" type="url" name="gluu_custom_logout" id="gluu_custom_logout"
                                                        autofocus="true"  placeholder="Enter custom URI after logout"
                                                        style="width:400px;"
@@ -322,12 +305,12 @@ $html.='
                                         </tr>';
                                         if (!empty($openid_error)) {
                                             $html .= '<tr>
-                                                <td><b><font color="#FF0000">*</font>Redirect URL:</b></td>
+                                                <td  style="width: 250px"><b><font color="#FF0000">*</font>Redirect URL:</b></td>
                                                 <td><p>' . $base_url . '?_action=plugin.gluu_sso-login-from-gluu</p>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><b><font color="#FF0000">*</font>Client ID:</b></td>
+                                                <td  style="width: 250px"><b><font color="#FF0000">*</font>Client ID:</b></td>
                                                 <td><input class="" type="text" name="gluu_client_id" id="gluu_client_id"
                                                            autofocus="true" placeholder="Enter OpenID Provider client ID."
                                                            style="width:400px;"
@@ -338,7 +321,7 @@ $html.='
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><b><font color="#FF0000">*</font>Client Secret:</b></td>
+                                                <td  style="width: 250px"><b><font color="#FF0000">*</font>Client Secret:</b></td>
                                                 <td>
                                                     <input class="" type="text" name="gluu_client_secret" id="gluu_client_secret"
                                                            autofocus="true" placeholder="Enter OpenID Provider client secret."  style="width:400px;" 
@@ -349,7 +332,7 @@ $html.='
                                             </tr>';
             }
             $html .= '<tr>
-                                            <td><b><font color="#FF0000">*</font>oxd port:</b></td>
+                                            <td  style="width: 250px"><b><font color="#FF0000">*</font>oxd port:</b></td>
                                             <td>
                                                 <input class="" type="number" name="gluu_oxd_port" min="0" max="65535"
                                                        value="' . $gluu_config['gluu_oxd_port'] . '"
@@ -369,14 +352,14 @@ $html.='
             if ($gluu_users_can_register == 1) {
                 $html .= " checked ";
             }
-            $html .= 'value="1" style="margin-right: 3px"> Automatically register any user with an account in the OpenID Provider</label></p>
+            $html .= 'value="1" style="margin-right: 3px"><b> Automatically login any user with an account in the OpenID Provider</b></label></p>
                                     </div>
                                     <div class="radio">
                                         <p><label ><input name="gluu_users_can_register" type="radio" id="gluu_users_can_register_1"';
             if ($gluu_users_can_register == 2) {
                 $html .= " checked ";
             }
-            $html .= 'value="2" style="margin-right: 3px"> Only register users with the following role(s) in the OpenID Provider</label></p>
+            $html .= 'value="2" style="margin-right: 3px"><b> Only login users with the following role(s) in the OpenID Provider</b></label></p>
                                         <div style="margin-left: 20px;">
                                             <div id="p_role" >';
             $k = 0;
@@ -385,14 +368,14 @@ $html.='
                     if (!$k) {
                         $k++;
                         $html .= '<p class="role_p" style="padding-top: 10px">
-                                                                <input  type="text" name="gluu_new_role[]" class="form-control" style="display: inline; width: 200px !important; "
+                                                                <input  type="text" name="gluu_new_role[]" required  style="display: inline; width: 200px !important; "
                                                                         placeholder="Input role name"
                                                                         value="' . $gluu_new_role . '"/>
                                                                 <button type="button" class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
                                                             </p>';
                     } else {
                         $html .= '<p class="role_p" style="padding-top: 10px">
-                                                                <input type="text" name="gluu_new_role[]" class="form-control" style="display: inline; width: 200px !important; "
+                                                                <input type="text" name="gluu_new_role[]" required  style="display: inline; width: 200px !important; "
                                                                        placeholder="Input role name"
                                                                        value="' . $gluu_new_role . '"/>
                                                                 <button type="button"  class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
@@ -402,24 +385,12 @@ $html.='
                 }
             } else {
                 $html .= '<p class="role_p" style="padding-top: 10px">
-                                                        <input type="text" name="gluu_new_role[]" class="form-control" placeholder="Input role name" style="display: inline; width: 200px !important; " value=""/>
+                                                        <input type="text" name="gluu_new_role[]" required  placeholder="Input role name" style="display: inline; width: 200px !important; " value=""/>
                                                         <button  type="button" class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
                                                     </p>';
             }
             $html .= '</div>
                                         </div>
-                                    </div>
-                                    <div class="radio">
-                                        <p>
-                                            <label >
-                                                <input name="gluu_users_can_register" type="radio" id="gluu_users_can_register_2" ';
-            if ($gluu_users_can_register == 3) {
-                $html .= " checked ";
-            }
-            $html .= 'value="3" style="margin-right: 3px">
-                                                Disable automatic registration
-                                            </label>
-                                        </p>
                                     </div>
                                     <table class="table">';
 
@@ -429,7 +400,7 @@ $html.='
                                                     <div><input class="button button-primary button-large" type="submit" name="register" value="Register" style=";width: 120px; float: right;"/></div>
                                                 </td>
                                                 <td>
-                                                    <div><a class="button button-danger button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important; background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a></div>
+                                                    <div><a class="button button-danger button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important; background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a></div>
                                                 </td>
                                             </tr>';
             } else {
@@ -439,11 +410,11 @@ $html.='
                                                         <div><input type="submit" name="register" value="Register" style="width: 120px; float: right;" class="button button-primary button-large"/></div>
                                                     </td>
                                                     <td>
-                                                        <a class="button button-primary button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important;background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a>
+                                                        <a class="button button-primary button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important;background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a>
                                                     </td>';
                 } else {
                     $html .= '<td style="width: 250px">
-                                                        <div><input type="submit" name="submit" value="Register" style="width: 120px; float: left;" class="button button-primary button-large"/></div>
+                                                        <div><input type="submit" name="submit" value="Register" style="width: 120px; float: right;" class="button button-primary button-large"/></div>
                                                     </td>
                                                     <td>
                                                     </td>';
@@ -459,11 +430,11 @@ $html.='
         }
         else {
             $html .= '<div style="padding: 20px !important;" id="accountsetup">
-                    <form id="register_GluuOxd" name="f" method="post" action="?_task=settings&_action=plugin.gluu_sso-save">
+                    <form id="register_GluuOxd" name="f" method="post" action="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save">
                         <input type="hidden" name="form_key" value="general_oxd_id_reset"/>
                         <fieldset style="border: 2px solid #53cc6b; padding: 20px">
                             <legend style="border-bottom:none; width: 110px !important;">
-                                <img style=" height: 45px;" src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
+                                <img style=" height: 45px;" src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
                             </legend>
                             <div style="padding-left: 20px; margin-top: -30px;">
                                 <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%; font-weight: bold ">Server Settings</h3>
@@ -540,14 +511,14 @@ $html.='
             if ($gluu_users_can_register == 1) {
                 $html .= ' checked ';
             }
-            $html .= 'value="1" style="margin-right: 3px"> Automatically register any user with an account in the OpenID Provider</label></p>
+            $html .= 'value="1" style="margin-right: 3px"><b> Automatically login any user with an account in the OpenID Provider</b></label></p>
                                 </div>
                                 <div>
                                     <p><label ><input name="gluu_users_can_register" disabled type="radio" id="gluu_users_can_register"';
             if ($gluu_users_can_register == 2) {
                 $html .= ' checked ';
             }
-            $html .= 'value="2" style="margin-right: 3px"> Only register users with the following role(s) in the OpenID Provider</label></p>
+            $html .= 'value="2" style="margin-right: 3px"> <b>Only login users with the following role(s) in the OpenID Provider</b></label></p>
                                     <div style="margin-left: 20px;">
                                         <div id="p_role_disabled">';
             $k = 0;
@@ -557,13 +528,13 @@ $html.='
                         $k++;
                         $html .= '<p class="role_p" style="padding-top: 10px">
                                                             <input  type="text" name="gluu_new_role[]" disabled  style="display: inline; width: 200px !important; "
-                                                                    placeholder="Input role name" class="form-control"
+                                                                    placeholder="Input role name" 
                                                                     value="'.$gluu_new_role.'"/>
                                                             <button type="button" class="btn btn-xs " disabled="true"><span class="glyphicon glyphicon-plus"></span></button>
                                                         </p>';
                     } else {
                         $html .= '<p class="role_p" style="padding-top: 10px">
-                                                            <input type="text" name="gluu_new_role[]" disabled class="form-control"
+                                                            <input type="text" name="gluu_new_role[]" disabled 
                                                                    placeholder="Input role name" style="display: inline; width: 200px !important; "
                                                                    value="'.$gluu_new_role.'"/>
                                                             <button type="button" class="btn btn-xs " disabled="true" ><span class="glyphicon glyphicon-plus"></span></button>
@@ -573,27 +544,21 @@ $html.='
                 }
             } else {
                 $html .= '<p class="role_p" style="padding-top: 10px">
-                                                    <input type="text" name="gluu_new_role[]" disabled placeholder="Input role name" class="form-control" style="display: inline; width: 200px !important; " value=""/>
+                                                    <input type="text" name="gluu_new_role[]" disabled placeholder="Input role name" style="display: inline; width: 200px !important; " value=""/>
                                                     <button type="button" class="btn btn-xs " disabled="true" ><span class="glyphicon glyphicon-plus"></span></button>
                                                 </p>';
             }
             $html .= '</div>
                                     </div>
                                 </div>
-                                <div>
-                                    <p><label><input name="gluu_users_can_register" disabled type="radio" id="gluu_users_can_register_2" ';
-            if ($gluu_users_can_register == 3) {
-                $html .= " checked ";
-            }
-            $html .= 'value="3" style="margin-right: 3px">Disable automatic registration</label></p>
-                                </div>
                                 <table class="table">
                                     <tr>
                                         <td style="width: 250px">
-                                            <a class="button button-primary button-large" style="padding:2px 5px !important;text-decoration: none;text-align:center; float: left; width: 100px;background-color: blue" href="?_task=settings&_action=plugin.gluu_sso-edit">Edit</a>
-                                            <input type="submit" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" name="resetButton" value="Delete" style="background-color:red;margin-left:20px;text-decoration: none;text-align:center; float: left; width: 100px;" class="button button-danger button-large"/>
+                                            <a class="button button-primary button-large" style="padding:2px 5px !important;text-decoration: none;text-align:center; float: right; width: 120px;background-color: blue" href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-edit">Edit</a>
                                         </td>
-                                        <td></td>
+                                        <td>
+                                            <input type="submit" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" name="resetButton" value="Delete" style="background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" class="button button-danger button-large"/>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -615,13 +580,7 @@ $html.='
     }
     public function admin_html_edit()
     {
-        $base_url = @($_SERVER["HTTPS"] != 'on') ? 'http://' : 'https://';
-        $url = $_SERVER['REQUEST_URI']; //returns the current URL
-        $parts = explode('/', $url);
-        $base_url .= $_SERVER['SERVER_NAME'];
-        for ($i = 0; $i < count($parts) - 1; $i++) {
-            $base_url .= $parts[$i] . "/";
-        }
+        $base_url = $this->getBaseUrl();
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
         $db = $RCMAIL->db;
         $result = $db->query("CREATE TABLE IF NOT EXISTS `gluu_table` (
@@ -701,9 +660,9 @@ $html.='
         $message_success = $this->gluu_db_query_select('message_success');
         $openid_error = $this->gluu_db_query_select('openid_error');
         $html='
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
 <script type="application/javascript">
     jQuery(document).ready(function() {
 
@@ -726,17 +685,6 @@ $html.='
         if($gluu_users_can_register == 2){
             $html.='jQuery("#p_role").children().prop(\'disabled\',false);
         jQuery("#p_role *").prop(\'disabled\',false);';
-        }
-        else if($gluu_users_can_register == 3){
-            $html.='jQuery("#p_role").children().prop(\'disabled\',true);
-        jQuery("#p_role *").prop(\'disabled\',true);
-        jQuery("input[name=\'gluu_new_role[]\']").each(function(){
-            var striped = jQuery(\'#p_role\');
-            var value =  jQuery(this).attr("value");
-            jQuery(\'<p><input type="hidden" name="gluu_new_role[]"  value= "\'+value+\'"/></p>\').appendTo(striped);
-        });
-        jQuery("#UserType").prop(\'disabled\',true);';
-
         }
         else{
             $html.='jQuery("#p_role").children().prop(\'disabled\',true);
@@ -823,8 +771,8 @@ $html.='
         });
     };
 </script>
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<script src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<script src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <div class="mo2f_container">
     <div class="container">
@@ -839,12 +787,12 @@ $html.='
         }
         $html .= '</div>
         <ul class="navbar navbar-tabs">
-            <li class="active" id="account_setup"><a href="?_task=settings&_action=plugin.gluu_sso">General</a></li>';
+            <li class="active" id="account_setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso">General</a></li>';
         if (!$this->gluu_is_oxd_registered()) {
             $html .= '<li id="social-sharing-setup"><a style="pointer-events: none; cursor: default;" >OpenID Connect Configuration</a></li>';
         } 
         else {
-            $html .= '<li id="social-sharing-setup"><a href="?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
+            $html .= '<li id="social-sharing-setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
         }
         $html .= '<li id=""><a data-method="#configopenid" href="https://oxd.gluu.org/docs/plugin/roundcube/" target="_blank">Documentation</a></li>';
         $html .= '</ul>
@@ -930,14 +878,14 @@ $html.='
             if ($gluu_users_can_register == 1) {
                 $html .= " checked ";
             }
-            $html .= 'value="1" style="margin-right: 3px"> Automatically register any user with an account in the OpenID Provider</label></p>
+            $html .= 'value="1" style="margin-right: 3px"><b> Automatically login any user with an account in the OpenID Provider</b></label></p>
                                     </div>
                                     <div class="radio">
                                         <p><label ><input name="gluu_users_can_register" type="radio" id="gluu_users_can_register_1"';
             if ($gluu_users_can_register == 2) {
                 $html .= " checked ";
             }
-            $html .= 'value="2" style="margin-right: 3px"> Only register users with the following role(s) in the OpenID Provider</label></p>
+            $html .= 'value="2" style="margin-right: 3px"><b> Only login users with the following role(s) in the OpenID Provider</b></label></p>
                                         <div style="margin-left: 20px;">
                                             <div id="p_role" >';
             $k = 0;
@@ -946,14 +894,14 @@ $html.='
                     if (!$k) {
                         $k++;
                         $html .= '<p class="role_p" style="padding-top: 10px">
-                                                                <input  type="text" name="gluu_new_role[]" class="form-control" style="display: inline; width: 200px !important; "
+                                                                <input  type="text" name="gluu_new_role[]" required  style="display: inline; width: 200px !important; "
                                                                         placeholder="Input role name"
                                                                         value="' . $gluu_new_role . '"/>
                                                                 <button type="button" class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
                                                             </p>';
                     } else {
                         $html .= '<p class="role_p" style="padding-top: 10px">
-                                                                <input type="text" name="gluu_new_role[]" class="form-control" style="display: inline; width: 200px !important; "
+                                                                <input type="text" name="gluu_new_role[]" required  style="display: inline; width: 200px !important; "
                                                                        placeholder="Input role name"
                                                                        value="' . $gluu_new_role . '"/>
                                                                 <button type="button"  class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
@@ -963,24 +911,12 @@ $html.='
                 }
             } else {
                 $html .= '<p class="role_p" style="padding-top: 10px">
-                                                        <input type="text" name="gluu_new_role[]" class="form-control" placeholder="Input role name" style="display: inline; width: 200px !important; " value=""/>
+                                                        <input type="text" name="gluu_new_role[]" required  placeholder="Input role name" style="display: inline; width: 200px !important; " value=""/>
                                                         <button  type="button" class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
                                                     </p>';
             }
             $html .= '</div>
                                         </div>
-                                    </div>
-                                    <div class="radio">
-                                        <p>
-                                            <label >
-                                                <input name="gluu_users_can_register" type="radio" id="gluu_users_can_register_2" ';
-            if ($gluu_users_can_register == 3) {
-                $html .= " checked ";
-            }
-            $html .= 'value="3" style="margin-right: 3px">
-                                                Disable automatic registration
-                                            </label>
-                                        </p>
                                     </div>
                                     <table class="table">
                                         ';
@@ -990,7 +926,7 @@ $html.='
                                                     <div><input class="button button-primary button-large" type="submit" name="register" value="Register" style=";width: 120px; float: right;"/></div>
                                                 </td>
                                                 <td>
-                                                    <div><a class="button button-danger button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important;background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a></div>
+                                                    <div><a class="button button-danger button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important;background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a></div>
                                                 </td>
                                             </tr>';
             } else {
@@ -1000,11 +936,11 @@ $html.='
                                                         <div><input type="submit" name="register" value="Register" style="width: 120px; float: right;" class="button button-primary button-large"/></div>
                                                     </td>
                                                     <td>
-                                                        <a class="button button-primary button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important;background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a>
+                                                        <a class="button button-primary button-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="padding:2px 5px !important;background-color:red;text-decoration: none;text-align:center; float: left; width: 120px;" href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a>
                                                     </td>';
                 } else {
                     $html .= '<td style="width: 250px">
-                                                        <div><input type="submit" name="submit" value="Register" style="width: 120px; float: left;" class="button button-primary button-large"/></div>
+                                                        <div><input type="submit" name="submit" value="Register" style="width: 120px; float: right;" class="button button-primary button-large"/></div>
                                                     </td>
                                                     <td>
                                                     </td>';
@@ -1020,17 +956,17 @@ $html.='
         } else {
             $html .= '<div style="padding: 20px !important;" id="accountsetup">
 <form id="register_GluuOxd" name="f" method="post" onsubmit="setFormSubmitting()"
-                              action="?_task=settings&_action=plugin.gluu_sso-save">
+                              action="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save">
                     <input type="hidden" name="form_key" value="general_oxd_edit"/>
                     <fieldset style="border: 2px solid #53cc6b; padding: 20px">
                         <legend style="border-bottom:none; width: 110px !important;">
-                            <img style=" height: 45px;" src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
+                            <img style=" height: 45px;" src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
                         </legend>
                         <div style="padding-left: 10px;margin-top: -20px">
                             <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60% ">Server Settings</h3>
                             <table class="table">
                                 <tr>
-                                    <td  ><b>URI of the OpenID Connect Provider:</b></td>
+                                    <td style="width: 250px" ><b>URI of the OpenID Connect Provider:</b></td>
                                     <td><input class="" type="url" name="gluu_provider" id="gluu_provider"
                                                autofocus="true" disabled placeholder="Enter URI of the OpenID Connect Provider."
                                                style="width:400px;"
@@ -1038,7 +974,7 @@ $html.='
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td  ><b>Custom URI after logout:</b></td>
+                                    <td style="width: 250px" ><b>Custom URI after logout:</b></td>
                                     <td><input class="" type="url" name="gluu_custom_logout" id="gluu_custom_logout"
                                                autofocus="true"  placeholder="Enter custom URI after logout"
                                                style="width:400px;"
@@ -1047,7 +983,7 @@ $html.='
                                 </tr>';
                                 if(!empty($gluu_config['gluu_client_id']) and !empty($gluu_config['gluu_client_secret'])){
                                     $html.='<tr>
-                                        <td  ><b><font color="#FF0000">*</font>Client ID:</b></td>
+                                        <td style="width: 250px" ><b><font color="#FF0000">*</font>Client ID:</b></td>
                                         <td><input class="" type="text" name="gluu_client_id" id="gluu_client_id"
                                                    autofocus="true" placeholder="Enter OpenID Provider client ID."
                                                    style="width:400px; "
@@ -1057,7 +993,7 @@ $html.='
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td  ><b><font color="#FF0000">*</font>Client Secret:</b></td>
+                                        <td style="width: 250px" ><b><font color="#FF0000">*</font>Client Secret:</b></td>
                                         <td>
                                             <input class="" type="text" name="gluu_client_secret" id="gluu_client_secret"
                                                    autofocus="true" placeholder="Enter OpenID Provider client secret."  style="width:400px; " value="';
@@ -1067,7 +1003,7 @@ $html.='
                                     </tr>';
                                  }
                                 $html.='<tr>
-                                    <td  ><b><font color="#FF0000">*</font>oxd port:</b></td>
+                                    <td style="width: 250px" ><b><font color="#FF0000">*</font>oxd port:</b></td>
                                     <td>
                                         <input class="" type="number"  name="gluu_oxd_port" min="0" max="65535"
                                                value="'.$gluu_config['gluu_oxd_port'].'"
@@ -1075,7 +1011,7 @@ $html.='
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td  ><b>oxd ID:</b></td>
+                                    <td style="width: 250px" ><b>oxd ID:</b></td>
                                     <td>
                                         <input class="" type="text" disabled name="oxd_id"
                                                value="'.$this->gluu_is_oxd_registered().'"
@@ -1095,14 +1031,14 @@ $html.='
             if ($gluu_users_can_register == 1) {
                 $html .= " checked ";
             }
-            $html .= 'value="1" style="margin-right: 3px"> Automatically register any user with an account in the OpenID Provider</label></p>
+            $html .= 'value="1" style="margin-right: 3px"><b> Automatically login any user with an account in the OpenID Provider</b></label></p>
                                     </div>
                                     <div class="radio">
                                         <p><label ><input name="gluu_users_can_register" type="radio" id="gluu_users_can_register_1"';
             if ($gluu_users_can_register == 2) {
                 $html .= " checked ";
             }
-            $html .= 'value="2" style="margin-right: 3px"> Only register users with the following role(s) in the OpenID Provider</label></p>
+            $html .= 'value="2" style="margin-right: 3px"><b> Only login users with the following role(s) in the OpenID Provider</b></label></p>
                                         <div style="margin-left: 20px;">
                                             <div id="p_role" >';
             $k = 0;
@@ -1111,14 +1047,14 @@ $html.='
                     if (!$k) {
                         $k++;
                         $html .= '<p class="role_p" style="padding-top: 10px">
-                                                                <input  type="text" name="gluu_new_role[]" class="form-control" style="display: inline; width: 200px !important; "
+                                                                <input  type="text" name="gluu_new_role[]" required  style="display: inline; width: 200px !important; "
                                                                         placeholder="Input role name"
                                                                         value="' . $gluu_new_role . '"/>
                                                                 <button type="button" class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
                                                             </p>';
                     } else {
                         $html .= '<p class="role_p" style="padding-top: 10px">
-                                                                <input type="text" name="gluu_new_role[]" class="form-control" style="display: inline; width: 200px !important; "
+                                                                <input type="text" name="gluu_new_role[]" required  style="display: inline; width: 200px !important; "
                                                                        placeholder="Input role name"
                                                                        value="' . $gluu_new_role . '"/>
                                                                 <button type="button"  class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
@@ -1128,32 +1064,20 @@ $html.='
                 }
             } else {
                 $html .= '<p class="role_p" style="padding-top: 10px">
-                                                        <input type="text" name="gluu_new_role[]" class="form-control" placeholder="Input role name" style="display: inline; width: 200px !important; " value=""/>
+                                                        <input type="text" name="gluu_new_role[]" required  placeholder="Input role name" style="display: inline; width: 200px !important; " value=""/>
                                                         <button  type="button" class="btn btn-xs add_new_role" onclick="test_add()"><span class="glyphicon glyphicon-plus"></span></button>
                                                     </p>';
             }
             $html .= '</div>
                                         </div>
                                     </div>
-                                    <div class="radio">
-                                        <p>
-                                            <label >
-                                                <input name="gluu_users_can_register" type="radio" id="gluu_users_can_register_2" ';
-            if ($gluu_users_can_register == 3) {
-                $html .= " checked ";
-            }
-            $html .= 'value="3" style="margin-right: 3px">
-                                                Disable automatic registration
-                                            </label>
-                                        </p>
-                                    </div>
                                     <table class="table">
                                 <tr>
-                                    <td>
-                                        <input type="submit" name="saveButton" value="Save" style="text-decoration: none;text-align:center; float: left; width: 100px;" class="button button-primary button-large"/>
-                                        <a class="button button-primary button-large" onclick="edit_cancel_function()" style="padding:2px 5px !important;background-color:red;margin-left:20px;text-align:center;float: left; width: 100px;" href="?_task=settings&_action=plugin.gluu_sso">Cancel</a>
+                                    <td style="width: 250px">
+                                        <input type="submit" name="saveButton" value="Save" style="text-decoration: none;text-align:center; float: right; width: 120px;" class="button button-primary button-large"/>
                                     </td>
                                     <td>
+                                        <a class="button button-primary button-large" onclick="edit_cancel_function()" style="padding:2px 5px !important;background-color:red;text-align:center;float: left; width: 120px;" href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso">Cancel</a>
                                     </td>
                                 </tr>
                             </table>
@@ -1176,13 +1100,7 @@ $html.='
     }
     public function admin_html_openidconfig()
     {
-        $base_url = @($_SERVER["HTTPS"] != 'on') ? 'http://' : 'https://';
-        $url = $_SERVER['REQUEST_URI']; //returns the current URL
-        $parts = explode('/', $url);
-        $base_url .= $_SERVER['SERVER_NAME'];
-        for ($i = 0; $i < count($parts) - 1; $i++) {
-            $base_url .= $parts[$i] . "/";
-        }
+        $base_url = $this->getBaseUrl();
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
         $db = $RCMAIL->db;
         $result = $db->query("CREATE TABLE IF NOT EXISTS `gluu_table` (
@@ -1257,9 +1175,9 @@ $html.='
         $message_error = $this->gluu_db_query_select('message_error');
         $message_success = $this->gluu_db_query_select('message_success');
         $html='
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
-<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
+<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
 
 ';
         $html.="
@@ -1401,8 +1319,8 @@ $html.='
     }
 </script>";
         $html.=
-            '<link href="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<script src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
+            '<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<script src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <div class="mo2f_container">
     <div class="container">
@@ -1417,22 +1335,22 @@ $html.='
         }
         $html .= '</div>
         <ul class="navbar navbar-tabs">
-            <li  id="account_setup"><a href="?_task=settings&_action=plugin.gluu_sso">General</a></li>';
+            <li  id="account_setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso">General</a></li>';
         if (!$this->gluu_is_oxd_registered()) {
             $html .= '<li class="active" id="social-sharing-setup"><a style="pointer-events: none; cursor: default;" >OpenID Connect Configuration</a></li>';
         } else {
-            $html .= '<li class="active" id="social-sharing-setup"><a href="?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
+            $html .= '<li class="active" id="social-sharing-setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
         }
         $html .= '<li id=""><a data-method="#configopenid" href="https://oxd.gluu.org/docs/plugin/roundcube/" target="_blank">Documentation</a></li>';
         $html .= '</ul>
         <div class="container-page">';
         $html .= '            
             <div id="configopenid" style="padding: 20px !important;">
-                <form action="?_task=settings&_action=plugin.gluu_sso-save" method="post" id="scpe_update">
+                <form action="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-save" method="post" id="scpe_update">
                     <input type="hidden" name="form_key" value="openid_config_page"/>
                     <fieldset style="border: 2px solid #53cc6b; padding: 20px">
                         <legend style="border-bottom:none; width: 110px !important;">
-                            <img style=" height: 45px;" src="plugins/rcube_openid_connect_single_sign_on_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
+                            <img style=" height: 45px;" src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
                         </legend>
                         <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%; ">User Scopes</h3>
                         <div >
@@ -1569,7 +1487,7 @@ $html.='
                         <p style=" margin-left: 20px; font-weight:bold "><label style="display: inline !important; "><input type="checkbox" name="send_user_check" id="send_user" value="1" ';
                         if(!$this->gluu_is_oxd_registered()) $html.=' disabled ';
                         if( $gluu_send_user_check) $html.=' checked ';
-                        $html.= '/> <span>Bypass the local SuiteCRM login page and send users straight to the OP for authentication</span></label>
+                        $html.= '/> <span>Bypass the local Roundcube login page and send users straight to the OP for authentication</span></label>
                         </p>
                         <br/>
                         <div>
@@ -1652,13 +1570,7 @@ $html.='
     {
         require_once("GluuOxd_Openid/oxd-rp/Register_site.php");
         require_once("GluuOxd_Openid/oxd-rp/Update_site_registration.php");
-        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://' :  'https://';
-        $url = $_SERVER['REQUEST_URI']; //returns the current URL
-        $parts = explode('/',$url);
-        $base_url.= $_SERVER['SERVER_NAME'];
-        for ($i = 0; $i < count($parts) - 1; $i++) {
-            $base_url .= $parts[$i] . "/";
-        }
+        $base_url = $this->getBaseUrl();
         $RCMAIL = rcmail::get_instance($GLOBALS['env']);
 
         $db = $RCMAIL->db;
@@ -1666,7 +1578,7 @@ $html.='
             if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_register_page' ) !== false ) {
                 if(!isset($_SERVER['HTTPS']) or $_SERVER['HTTPS'] != "on") {
                     $this->gluu_db_query_update('message_error', 'OpenID Connect requires https. This plugin will not work if your website uses http only.');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
                 if($_POST['gluu_users_can_register']==1){
                     $this->gluu_db_query_update('gluu_users_can_register', $_POST['gluu_users_can_register']);
@@ -1691,29 +1603,18 @@ $html.='
                         $this->gluu_db_query_update('gluu_new_role', json_encode(null));
                     }
                 }
-                if($_POST['gluu_users_can_register']==3){
-                    $this->gluu_db_query_update('gluu_users_can_register', 3);
-                    if(!empty(array_values(array_filter($_POST['gluu_new_role'])))){
-                        $this->gluu_db_query_update('gluu_new_role', json_encode(array_values(array_filter($_POST['gluu_new_role']))));
-                        $config = json_decode($this->gluu_db_query_select('gluu_config'),true);
-                        array_push($config['config_scopes'],'permission');
-                        $gluu_config = json_decode($this->gluu_db_query_update('gluu_config', json_encode($config)),true);
-                    }else{
-                        $this->gluu_db_query_update('gluu_new_role', json_encode(null));
-                    }
-                }
                 if (empty($_POST['gluu_oxd_port'])) {
                     $this->gluu_db_query_update('message_error', 'All the fields are required. Please enter valid entries.');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
                 if (intval($_POST['gluu_oxd_port']) > 65535 && intval($_POST['gluu_oxd_port']) < 0) {
                     $this->gluu_db_query_update('message_error', 'Enter your oxd host port (Min. number 1, Max. number 65535)');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
                 if  (!empty($_POST['gluu_provider'])) {
                     if (filter_var($_POST['gluu_provider'], FILTER_VALIDATE_URL) === false) {
                         $this->gluu_db_query_update('message_error', 'Please enter valid OpenID Provider URI.');
-                        header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                        header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                     }
                 }
                 if  (!empty($_POST['gluu_custom_logout'])) {
@@ -1780,7 +1681,7 @@ $html.='
                                 }
                                 if(!$this->gluu_is_port_working()){
                                     $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                                 }
                                 $register_site = new Register_site();
                                 $register_site->setRequestOpHost($gluu_provider);
@@ -1810,15 +1711,15 @@ $html.='
                                 $status = $register_site->request();
                                 if ($status['message'] == 'invalid_op_host') {
                                     $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                                 }
                                 if (!$status['status']) {
                                     $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                                 }
                                 if ($status['message'] == 'internal_error') {
                                     $this->gluu_db_query_update('message_error', 'ERROR: '.$status['error_message']);
-                                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                                 }
                                 $gluu_oxd_id = $register_site->getResponseOxdId();
                                 //var_dump($register_site->getResponseObject());exit;
@@ -1827,15 +1728,15 @@ $html.='
                                     $gluu_provider = $register_site->getResponseOpHost();
                                     $gluu_provider = $this->gluu_db_query_update('gluu_provider', $gluu_provider);
                                     $this->gluu_db_query_update('message_success', 'Your settings are saved successfully.');
-                                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                                 } else {
                                     $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                                 }
                             }
                             else{
                                 $this->gluu_db_query_update('openid_error', 'Error505.');
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                         }
                         else{
@@ -1859,7 +1760,7 @@ $html.='
 
                             if(!$this->gluu_is_port_working()){
                                 $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
 
                             $register_site = new Register_site();
@@ -1889,15 +1790,15 @@ $html.='
                             //var_dump($status);exit;
                             if ($status['message'] == 'invalid_op_host') {
                                 $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                             if (!$status['status']) {
                                 $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                             if ($status['message'] == 'internal_error') {
                                 $this->gluu_db_query_update('message_error', 'ERROR: '.$status['error_message']);
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                             $gluu_oxd_id = $register_site->getResponseOxdId();
                             if ($gluu_oxd_id) {
@@ -1906,18 +1807,18 @@ $html.='
                                 $this->gluu_db_query_update('gluu_provider', $gluu_provider);
                                 $this->gluu_db_query_update('message_success', 'Your settings are saved successfully.');
 
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');
                                 return;
                             }
                             else {
                                 $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                         }
                     }
                     else{
                         $this->gluu_db_query_update('message_error', 'Please enter correct URI of the OpenID Provider');
-                        header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                        header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                     }
                 }
                 else{
@@ -1940,7 +1841,7 @@ $html.='
                     if(!$this->gluu_is_port_working()){
                         $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
 
-                        header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                        header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                     }
                     $register_site = new Register_site();
                     $register_site->setRequestAuthorizationRedirectUri($gluu_config['authorization_redirect_uri']);
@@ -1953,17 +1854,17 @@ $html.='
 
                     if ($status['message'] == 'invalid_op_host') {
                         $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                        header("Location: /?_task=settings&_action=plugin.gluu_sso");
+                        header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');
                         return;
                     }
                     if (!$status['status']) {
                         $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                        header("Location: /?_task=settings&_action=plugin.gluu_sso");
+                        header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');
                         return;
                     }
                     if ($status['message'] == 'internal_error') {
                         $this->gluu_db_query_update('message_error', 'ERROR: '.$status['error_message']);
-                        header("Location: /?_task=settings&_action=plugin.gluu_sso");
+                        header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');
                         return;
                     }
                     $gluu_oxd_id = $register_site->getResponseOxdId();
@@ -1981,7 +1882,7 @@ $html.='
                         $obj = json_decode($json);
                         if(!$this->gluu_is_port_working()){
                             $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         $register_site = new Register_site();
                         $register_site->setRequestOpHost($gluu_provider);
@@ -2010,37 +1911,37 @@ $html.='
                         $status = $register_site->request();
                         if ($status['message'] == 'invalid_op_host') {
                             $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         if (!$status['status']) {
                             $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         if ($status['message'] == 'internal_error') {
                             $this->gluu_db_query_update('message_error', 'ERROR: '.$status['error_message']);
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         $gluu_oxd_id = $register_site->getResponseOxdId();
                         if ($gluu_oxd_id) {
                             $gluu_oxd_id = $this->gluu_db_query_update('gluu_oxd_id', $gluu_oxd_id);
                             $this->gluu_db_query_update('message_success', 'Your settings are saved successfully.');
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         else {
                             $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                     }
                     else {
                         $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                        header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                        header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                     }
                 }
             }
             else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_oxd_edit' ) !== false ) {
                 if(!isset($_SERVER['HTTPS']) or $_SERVER['HTTPS'] != "on") {
                     $this->gluu_db_query_update('message_error', 'OpenID Connect requires https. This plugin will not work if your website uses http only.');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
                 if($_POST['gluu_users_can_register']==1){
                     $this->gluu_db_query_update('gluu_users_can_register', $_POST['gluu_users_can_register']);
@@ -2065,24 +1966,13 @@ $html.='
                         $this->gluu_db_query_update('gluu_new_role', json_encode(null));
                     }
                 }
-                if($_POST['gluu_users_can_register']==3){
-                    $this->gluu_db_query_update('gluu_users_can_register', 3);
-                    if(!empty(array_values(array_filter($_POST['gluu_new_role'])))){
-                        $this->gluu_db_query_update('gluu_new_role', json_encode(array_values(array_filter($_POST['gluu_new_role']))));
-                        $config = json_decode($this->gluu_db_query_select('gluu_config'),true);
-                        array_push($config['config_scopes'],'permission');
-                        $gluu_config = json_decode($this->gluu_db_query_update('gluu_config', json_encode($config)),true);
-                    }else{
-                        $this->gluu_db_query_update('gluu_new_role', json_encode(null));
-                    }
-                }
                 if (empty($_POST['gluu_oxd_port'])) {
                     $this->gluu_db_query_update('message_error', 'All the fields are required. Please enter valid entries.');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
                 if (intval($_POST['gluu_oxd_port']) > 65535 && intval($_POST['gluu_oxd_port']) < 0) {
                     $this->gluu_db_query_update('message_error', 'Enter your oxd host port (Min. number 1, Max. number 65535)');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
                 
                 if  (!empty($_POST['gluu_custom_logout'])) {
@@ -2145,7 +2035,7 @@ $html.='
                             }
                             if(!$this->gluu_is_port_working()){
                                 $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                             $register_site = new Register_site();
                             $register_site->setRequestOpHost($gluu_provider);
@@ -2175,15 +2065,15 @@ $html.='
                             $status = $register_site->request();
                             if ($status['message'] == 'invalid_op_host') {
                                 $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                             if (!$status['status']) {
                                 $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                             if ($status['message'] == 'internal_error') {
                                 $this->gluu_db_query_update('message_error', 'ERROR: '.$status['error_message']);
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                             $gluu_oxd_id = $register_site->getResponseOxdId();
                             //var_dump($register_site->getResponseObject());exit;
@@ -2192,15 +2082,15 @@ $html.='
                                 $gluu_provider = $register_site->getResponseOpHost();
                                 $gluu_provider = $this->gluu_db_query_update('gluu_provider', $gluu_provider);
                                 $this->gluu_db_query_update('message_success', 'Your settings are saved successfully.');
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             } else {
                                 $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                             }
                         }
                         else{
                             $this->gluu_db_query_update('openid_error', 'Error505.');
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                     }
                     else{
@@ -2224,7 +2114,7 @@ $html.='
 
                         if(!$this->gluu_is_port_working()){
                             $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
 
                         $register_site = new Register_site();
@@ -2254,15 +2144,15 @@ $html.='
                         //var_dump($status);exit;
                         if ($status['message'] == 'invalid_op_host') {
                             $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         if (!$status['status']) {
                             $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         if ($status['message'] == 'internal_error') {
                             $this->gluu_db_query_update('message_error', 'ERROR: '.$status['error_message']);
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                         $gluu_oxd_id = $register_site->getResponseOxdId();
                         if ($gluu_oxd_id) {
@@ -2271,18 +2161,18 @@ $html.='
                             $this->gluu_db_query_update('gluu_provider', $gluu_provider);
                             $this->gluu_db_query_update('message_success', 'Your settings are saved successfully.');
 
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');
                             return;
                         }
                         else {
                             $this->gluu_db_query_update('message_error', "ERROR: OpenID Provider host is required if you don\'t provide it in oxd-default-site-config.json");
-                            header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                            header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                         }
                     }
                 }
                 else{
                     $this->gluu_db_query_update('message_error', 'Please enter correct URI of the OpenID Provider');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
             }
             else if( isset( $_REQUEST['submit'] ) and strpos( $_REQUEST['submit'], 'delete' )  !== false and !empty($_REQUEST['submit'])) {
@@ -2295,7 +2185,7 @@ $html.='
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
                 $this->gluu_db_query_insert('message_success', 'Configurations deleted Successfully.');
                 $this->gluu_db_query_insert('message_error', '');
-                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
             }
             else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_oxd_id_reset' )!== false and !empty($_REQUEST['resetButton'])) {
                 $db->query("DROP TABLE IF EXISTS `gluu_table`;");
@@ -2307,7 +2197,7 @@ $html.='
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
                 $this->gluu_db_query_insert('message_success', 'Configurations deleted Successfully.');
                 $this->gluu_db_query_insert('message_error', '');
-                header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
             }
             else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'openid_config_page' ) !== false ) {
                 $params = $_REQUEST;
@@ -2355,7 +2245,7 @@ $html.='
                 $gluu_oxd_id =   $this->gluu_db_query_select("gluu_oxd_id");
                 if(!$this->gluu_is_port_working()){
                     $this->gluu_db_query_update('message_error', 'Can not connect to the oxd server. Please check the oxd-config.json file to make sure you have entered the correct port and the oxd server is operational.');
-                    header("Location: /?_task=settings&_action=plugin.gluu_sso");return;
+                    header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso');return;
                 }
                 $update_site_registration = new Update_site_registration();
                 $update_site_registration->setRequestOxdId($gluu_oxd_id);
@@ -2372,7 +2262,7 @@ $html.='
                 }
 
                 $this->gluu_db_query_update('message_success', 'Your OpenID connect configuration has been saved.');
-                header("Location: /?_task=settings&_action=plugin.gluu_sso-openidconfig");return;
+                header('Location: '.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig');return;
             }
             else if( isset( $_REQUEST['form_key_scope_delete'] ) and strpos( $_REQUEST['form_key_scope_delete'], 'form_key_scope_delete' ) !== false ) {
                 $get_scopes =   json_decode($this->gluu_db_query_select('gluu_scopes'),true);
@@ -2415,20 +2305,14 @@ $html.='
             }
         }
         else{
-            header("Location: /");
+            header("Location: ".$base_url);
             return;
         }
         $RCMAIL->output->redirect('plugin.gluu_sso');
     }
     public function startup($args)
     {
-        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://' :  'https://';
-        $url = $_SERVER['REQUEST_URI']; //returns the current URL
-        $parts = explode('/',$url);
-        $base_url.= $_SERVER['SERVER_NAME'];
-        for ($i = 0; $i < count($parts) - 1; $i++) {
-            $base_url .= $parts[$i] . "/";
-        }
+        $base_url = $this->getBaseUrl();
 
         if(isset( $_REQUEST['_task'] ) and strpos( $_REQUEST['_task'], 'logout' ) !== false ){
             if(isset( $_REQUEST['logout'] ) and strpos( $_REQUEST['logout'], 'fromop' ) !== false ){
@@ -2729,10 +2613,10 @@ $html.='
                     $bool = True;
                 }
             }
-            if(!$bool or $gluu_users_can_register == 3){
+            if(!$bool){
                 echo "<script>
 					alert('You are not authorized for an account on this application. If you think this is an error, please contact your OpenID Connect Provider (OP) admin.');
-					location.href='".$base_url."';
+					window.location.href='" . $this->gluu_sso_doing_logout($get_tokens_by_code->getResponseIdToken(), $_REQUEST['session_state'], $_REQUEST['state']) . "';
 				 </script>";
                 exit;
             }
@@ -2760,7 +2644,7 @@ $html.='
             }
             else{
                 echo "<script type='application/javascript'>
-					alert('Problem with imap connection, please look your imapData in your OpenID provier scopes.');
+					alert('Problem with imap connection, please look your imapData in your OpenID provider scopes.');
 					location.href='".$base_url."';
 				 </script>";
                 exit;
@@ -2769,13 +2653,7 @@ $html.='
     }
     public function gluu_sso_loginform($content)
     {
-        $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://' :  'https://';
-        $url = $_SERVER['REQUEST_URI']; //returns the current URL
-        $parts = explode('/',$url);
-        $base_url.= $_SERVER['SERVER_NAME'];
-        for ($i = 0; $i < count($parts) - 1; $i++) {
-            $base_url .= $parts[$i] . "/";
-        }
+        $base_url = $this->getBaseUrl();
         $this->include_stylesheet('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
         $oxd_id = $this->gluu_db_query_select('gluu_oxd_id');
         $gluu_send_user_check = $this->gluu_db_query_select('gluu_send_user_check');
@@ -2837,5 +2715,60 @@ $html.='
     public function gluu_db_query_update($gluu_action, $gluu_value){
         self::$gluuDB->query("UPDATE `gluu_table` SET `gluu_value` = '".$gluu_value."' WHERE `gluu_action` LIKE '".$gluu_action."';");
         return self::$gluuDB->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$gluu_action."'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+    }
+
+    public function getBaseUrl()
+    {
+        $currentPath = $_SERVER['PHP_SELF'];
+        $pathInfo = pathinfo($currentPath);
+        $hostName = $_SERVER['HTTP_HOST'];
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        if (strpos($pathInfo['dirname'], '\\') !== false) {
+            return $protocol . $hostName . "/";
+        } else {
+            return $protocol . $hostName . $pathInfo['dirname'] . "/";
+        }
+    }
+    /**
+     * Doing logout is something is wrong
+     */
+    public function gluu_sso_doing_logout($user_oxd_id_token, $session_states, $state)
+    {
+        @session_start();
+
+        require_once("GluuOxd_Openid/oxd-rp/Logout.php");
+        $RCMAIL = rcmail::get_instance($GLOBALS['env']);
+        $oxd_id =  $this->gluu_db_query_select("gluu_oxd_id");
+        $gluu_provider = $this->gluu_db_query_select('gluu_provider');
+        $gluu_config = json_decode($this->gluu_db_query_select("gluu_config"),true);
+        $arrContextOptions=array(
+          "ssl"=>array(
+            "verify_peer"=>false,
+            "verify_peer_name"=>false,
+          ),
+        );
+        $json = file_get_contents($gluu_provider.'/.well-known/openid-configuration', false, stream_context_create($arrContextOptions));
+        $obj = json_decode($json);
+        if (!empty($obj->end_session_endpoint ) or $gluu_provider == 'https://accounts.google.com') {
+            if (!empty($_SESSION['user_oxd_id_token'])) {
+                if ($oxd_id && $_SESSION['user_oxd_id_token'] && $_SESSION['session_in_op']) {
+                    $logout = new Logout();
+                    $logout->setRequestOxdId($oxd_id);
+                    $logout->setRequestIdToken($_SESSION['user_oxd_id_token']);
+                    $logout->setRequestPostLogoutRedirectUri($gluu_config['post_logout_redirect_uri']);
+                    $logout->setRequestSessionState($_SESSION['session_state']);
+                    $logout->setRequestState($_SESSION['state']);
+                    $logout->request();
+                    unset($_SESSION['user_oxd_access_token']);
+                    unset($_SESSION['user_oxd_id_token']);
+                    unset($_SESSION['session_state']);
+                    unset($_SESSION['state']);
+                    unset($_SESSION['session_in_op']);
+                    return $logout->getResponseObject()->data->uri;
+                }
+            }
+        }
+
+        return getBaseUrl();
     }
 }
