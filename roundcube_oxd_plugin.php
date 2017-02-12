@@ -2601,25 +2601,25 @@ $html.='
                 $world = str_replace("[","",$get_user_info_array->permission[0]);
                 $reg_user_permission = str_replace("]","",$world);
             }
-            /*echo '<pre>';
-            var_dump($get_user_info_array->imapHost[0]);exit;*/
-            $bool = true;
-            $gluu_new_roles              = json_decode($this->gluu_db_query_select('gluu_new_role'));
-            $gluu_users_can_register    = $this->gluu_db_query_select('gluu_users_can_register');
-            if($gluu_users_can_register == 2 and !empty($gluu_new_roles)){
-                if (!in_array($reg_user_permission, $gluu_new_roles)) {
-                    $bool = false;
-                }else{
-                    $bool = True;
-                }
-            }
-            if(!$bool){
-                echo "<script>
-					alert('You are not authorized for an account on this application. If you think this is an error, please contact your OpenID Connect Provider (OP) admin.');
-					window.location.href='" . $this->gluu_sso_doing_logout($get_tokens_by_code->getResponseIdToken(), $_REQUEST['session_state'], $_REQUEST['state']) . "';
-				 </script>";
-                exit;
-            }
+		        $bool = false;
+		        $gluu_new_roles              = json_decode($this->gluu_db_query_select('gluu_new_role'));
+		        $gluu_users_can_register    = $this->gluu_db_query_select('gluu_users_can_register');
+		        
+		        if($gluu_users_can_register == 2 and !empty($gluu_new_roles)){
+			        foreach ($gluu_new_roles as $gluu_new_role){
+				        if(strstr($reg_user_permission, $gluu_new_role)){
+					        $bool = true;
+				        }
+			        }
+			        if(!$bool){
+				        echo "<script>
+												alert('You are not authorized for an account on this application. If you think this is an error, please contact your OpenID Connect Provider (OP) admin.');
+												window.location.href='" . $this->gluu_sso_doing_logout($get_tokens_by_code->getResponseIdToken(), $_REQUEST['session_state'], $_REQUEST['state']) . "';
+											 </script>";
+				        exit;
+			        }
+		        }
+            
             $auth = $RCMAIL->plugins->exec_hook('authenticate', array(
                 'host' => $get_user_info_array->imapHost[0],
                 'user' => trim(rcube_utils::get_input_value('_user', $get_user_info_array->imapUsername[0])),
