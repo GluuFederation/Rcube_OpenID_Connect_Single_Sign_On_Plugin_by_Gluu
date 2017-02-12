@@ -7,7 +7,7 @@
  +-----------------------------------------------------------------------+
  */
 
-class rcube_oc_sso_plugin_by_gluu extends rcube_plugin
+class roundcube_oxd_plugin extends rcube_plugin
 {
     public $task = 'login|logout|settings';
     private $app;
@@ -152,9 +152,9 @@ class rcube_oc_sso_plugin_by_gluu extends rcube_plugin
         $message_success = $this->gluu_db_query_select('message_success');
         $openid_error = $this->gluu_db_query_select('openid_error');
         $html='
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
 <script type="application/javascript">
     jQuery(document).ready(function() {
 
@@ -245,8 +245,8 @@ class rcube_oc_sso_plugin_by_gluu extends rcube_plugin
     });
 </script>';
 $html.='
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<script src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<script src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/js/scope-custom-script.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <div class="mo2f_container">
     <div class="container">
@@ -434,7 +434,7 @@ $html.='
                         <input type="hidden" name="form_key" value="general_oxd_id_reset"/>
                         <fieldset style="border: 2px solid #53cc6b; padding: 20px">
                             <legend style="border-bottom:none; width: 110px !important;">
-                                <img style=" height: 45px;" src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
+                                <img style=" height: 45px;" src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/images/icons/gl.png"/>
                             </legend>
                             <div style="padding-left: 20px; margin-top: -30px;">
                                 <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%; font-weight: bold ">Server Settings</h3>
@@ -660,9 +660,9 @@ $html.='
         $message_success = $this->gluu_db_query_select('message_success');
         $openid_error = $this->gluu_db_query_select('openid_error');
         $html='
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
 <script type="application/javascript">
     jQuery(document).ready(function() {
 
@@ -771,8 +771,8 @@ $html.='
         });
     };
 </script>
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<script src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<script src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/js/scope-custom-script.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <div class="mo2f_container">
     <div class="container">
@@ -790,7 +790,7 @@ $html.='
             <li class="active" id="account_setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso">General</a></li>';
         if (!$this->gluu_is_oxd_registered()) {
             $html .= '<li id="social-sharing-setup"><a style="pointer-events: none; cursor: default;" >OpenID Connect Configuration</a></li>';
-        } 
+        }
         else {
             $html .= '<li id="social-sharing-setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
         }
@@ -960,7 +960,7 @@ $html.='
                     <input type="hidden" name="form_key" value="general_oxd_edit"/>
                     <fieldset style="border: 2px solid #53cc6b; padding: 20px">
                         <legend style="border-bottom:none; width: 110px !important;">
-                            <img style=" height: 45px;" src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
+                            <img style=" height: 45px;" src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/images/icons/gl.png"/>
                         </legend>
                         <div style="padding-left: 10px;margin-top: -20px">
                             <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60% ">Server Settings</h3>
@@ -1175,9 +1175,9 @@ $html.='
         $message_error = $this->gluu_db_query_select('message_error');
         $message_success = $this->gluu_db_query_select('message_success');
         $html='
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
-<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
+<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/bootstrap.css" rel="stylesheet"/>
 
 ';
         $html.="
@@ -1319,8 +1319,8 @@ $html.='
     }
 </script>";
         $html.=
-            '<link href="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-<script src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/js/scope-custom-script.js"></script>
+            '<link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<script src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/js/scope-custom-script.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <div class="mo2f_container">
     <div class="container">
@@ -1350,7 +1350,7 @@ $html.='
                     <input type="hidden" name="form_key" value="openid_config_page"/>
                     <fieldset style="border: 2px solid #53cc6b; padding: 20px">
                         <legend style="border-bottom:none; width: 110px !important;">
-                            <img style=" height: 45px;" src="plugins/rcube_oc_sso_plugin_by_gluu/GluuOxd_Openid/images/icons/gl.png"/>
+                            <img style=" height: 45px;" src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/images/icons/gl.png"/>
                         </legend>
                         <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%; ">User Scopes</h3>
                         <div >
