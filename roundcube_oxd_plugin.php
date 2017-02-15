@@ -342,7 +342,7 @@ $html.='
                                     </table>
                                 </div>
                                 <div style="padding-left: 20px">
-                                    <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment
+                                    <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment and Access Management
                                         <a data-toggle="tooltip" class="tooltipLink" data-original-title="Choose whether to register new users when they login at an external identity provider. If you disable automatic registration, new users will need to be manually created">
                                             <span class="glyphicon glyphicon-info-sign"></span>
                                         </a>
@@ -359,7 +359,7 @@ $html.='
             if ($gluu_users_can_register == 2) {
                 $html .= " checked ";
             }
-            $html .= 'value="2" style="margin-right: 3px"><b> Only login users with the following role(s) in the OpenID Provider</b></label></p>
+            $html .= 'value="2" style="margin-right: 3px"><b> Only register and allow ongoing access to users with one or more of the following roles in the OpenID Provider</b></label></p>
                                         <div style="margin-left: 20px;">
                                             <div id="p_role" >';
             $k = 0;
@@ -501,7 +501,7 @@ $html.='
                                 </table>
                             </div>
                             <div style="padding-left: 20px;">
-                                <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment
+                                <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment and Access Management
                                     <a data-toggle="tooltip" class="tooltipLink" data-original-title="Choose whether to register new users when they login at an external identity provider. If you disable automatic registration, new users will need to be manually created">
                                         <span class="glyphicon glyphicon-info-sign"></span>
                                     </a>
@@ -518,7 +518,7 @@ $html.='
             if ($gluu_users_can_register == 2) {
                 $html .= ' checked ';
             }
-            $html .= 'value="2" style="margin-right: 3px"> <b>Only login users with the following role(s) in the OpenID Provider</b></label></p>
+            $html .= 'value="2" style="margin-right: 3px"> <b>Only register and allow ongoing access to users with one or more of the following roles in the OpenID Provider</b></label></p>
                                     <div style="margin-left: 20px;">
                                         <div id="p_role_disabled">';
             $k = 0;
@@ -868,7 +868,7 @@ $html.='
                                     </table>
                                 </div>
                                 <div style="padding-left: 20px">
-                                    <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment
+                                    <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment and Access Management
                                         <a data-toggle="tooltip" class="tooltipLink" data-original-title="Choose whether to register new users when they login at an external identity provider. If you disable automatic registration, new users will need to be manually created">
                                             <span class="glyphicon glyphicon-info-sign"></span>
                                         </a>
@@ -885,7 +885,7 @@ $html.='
             if ($gluu_users_can_register == 2) {
                 $html .= " checked ";
             }
-            $html .= 'value="2" style="margin-right: 3px"><b> Only login users with the following role(s) in the OpenID Provider</b></label></p>
+            $html .= 'value="2" style="margin-right: 3px"><b> Only register and allow ongoing access to users with one or more of the following roles in the OpenID Provider</b></label></p>
                                         <div style="margin-left: 20px;">
                                             <div id="p_role" >';
             $k = 0;
@@ -1021,7 +1021,7 @@ $html.='
                             </table>
                         </div>
                              <div style="padding-left: 20px">
-                                    <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment
+                                    <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%;">Enrollment and Access Management
                                         <a data-toggle="tooltip" class="tooltipLink" data-original-title="Choose whether to register new users when they login at an external identity provider. If you disable automatic registration, new users will need to be manually created">
                                             <span class="glyphicon glyphicon-info-sign"></span>
                                         </a>
@@ -1038,7 +1038,7 @@ $html.='
             if ($gluu_users_can_register == 2) {
                 $html .= " checked ";
             }
-            $html .= 'value="2" style="margin-right: 3px"><b> Only login users with the following role(s) in the OpenID Provider</b></label></p>
+            $html .= 'value="2" style="margin-right: 3px"><b> Only register and allow ongoing access to users with one or more of the following roles in the OpenID Provider</b></label></p>
                                         <div style="margin-left: 20px;">
                                             <div id="p_role" >';
             $k = 0;
