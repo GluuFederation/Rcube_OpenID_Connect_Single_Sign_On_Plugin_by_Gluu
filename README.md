@@ -16,14 +16,14 @@ In order to use the Roundcube plugin you will need to have a standard OP (like G
  
 ### Download
 
-[Github source](https://github.com/GluuFederation/roundcube_oxd_plugin/archive/v2.4.4.zip).
+[Github source](https://github.com/GluuFederation/roundcube_oxd_plugin/archive/v3.0.0.zip).
 
 [Link to RoundCube repository](https://plugins.roundcube.net/packages/gluufederation/roundcube_oxd_plugin)
 
 To install RoundCube OpenID Connect Single Sign On (SSO) Plugin By Gluu via Composer, execute the following command 
 
 ```
-$ composer install `composer require "gluufederation/roundcube_oxd_plugin": "2.4.4"`
+$ composer install `composer require "gluufederation/roundcube_oxd_plugin": "3.0.0"`
 
 ```
 

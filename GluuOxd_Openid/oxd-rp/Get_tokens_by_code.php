@@ -1,60 +1,65 @@
 <?php
-/**
- * Gluu-oxd-library
- *
- * An open source application library for PHP
- *
- * This content is released under the MIT License (MIT)
- *
- * Copyright (c) 2015, Gluu inc, USA, Austin
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * @package	Gluu-oxd-library
- * @version 2.4.4
- * @author	Vlad Karapetyan
- * @author		vlad.karapetyan.1988@mail.ru
- * @copyright	Copyright (c) 2015, Gluu inc federation (https://gluu.org/)
- * @license	http://opensource.org/licenses/MIT	MIT License
- * @link	https://gluu.org/
- * @since	Version 2.4.4
- * @filesource
- */
+	
+	/**
+	 * Gluu-oxd-library
+	 *
+	 * An open source application library for PHP
+	 *
+	 *
+	 * @copyright Copyright (c) 2017, Gluu Inc. (https://gluu.org/)
+	 * @license	  MIT   License            : <http://opensource.org/licenses/MIT>
+	 *
+	 * @package	  Oxd Library by Gluu
+	 * @category  Library, Api
+	 * @version   3.0.0
+	 *
+	 * @author    Gluu Inc.          : <https://gluu.org>
+	 * @link      Oxd site           : <https://oxd.gluu.org>
+	 * @link      Documentation      : <https://oxd.gluu.org/docs/3.0.0/libraries/php/>
+	 * @director  Mike Schwartz      : <mike@gluu.org>
+	 * @support   Support page       : <support@gluu.org>
+	 * @developer Volodya Karapetyan : <https://github.com/karapetyan88> <mr.karapetyan88@gmail.com>
+	 *
+	 
+	 *
+	 * This content is released under the MIT License (MIT)
+	 *
+	 * Copyright (c) 2017, Gluu inc, USA, Austin
+	 *
+	 * Permission is hereby granted, free of charge, to any person obtaining a copy
+	 * of this software and associated documentation files (the "Software"), to deal
+	 * in the Software without restriction, including without limitation the rights
+	 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	 * copies of the Software, and to permit persons to whom the Software is
+	 * furnished to do so, subject to the following conditions:
+	 *
+	 * The above copyright notice and this permission notice shall be included in
+	 * all copies or substantial portions of the Software.
+	 *
+	 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	 * THE SOFTWARE.
+	 *
+	 */
+	
+	/**
+	 * Client tokens code class
+	 *
+	 * Class is connecting to oxd-server via socket, and getting token code from gluu-server.
+	 *
+	 * @package		  Gluu-oxd-library
+	 * @subpackage	Libraries
+	 * @category	  Relying Party (RP)
+	 * @see	        Client_OXD_RP
+	 */
+	
+	require_once 'Client_OXD_RP.php';
 
-/**
- * Client tokens code class
- *
- * Class is connecting to oXD-server via socket, and getting token code from gluu-server.
- *
- * @package		Gluu-oxd-library
- * @subpackage	Libraries
- * @category	Relying Party (RP) and User Managed Access (UMA)
- * @author		Vlad Karapetyan
- * @author		vlad.karapetyan.1988@mail.ru
- * @see	        Client_Socket_OXD_RP
- * @see	        Client_OXD_RP
- * @see	        Oxd_RP_config
- */
-
-require_once 'Client_OXD_RP.php';
-
-class Get_tokens_by_code extends Client_OXD_RP
+	class Get_tokens_by_code extends Client_OXD_RP
 {
     /**
      * @var string $request_oxd_id                           This parameter you must get after registration site in gluu-server

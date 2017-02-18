@@ -1,5 +1,5 @@
 /**
- * Created by Vlad on 3/20/2016.
+ * Created by Volodya on 3/20/2016.
  */
 
 function test_add() {
