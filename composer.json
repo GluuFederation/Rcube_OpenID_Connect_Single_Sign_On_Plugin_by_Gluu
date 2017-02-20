@@ -19,16 +19,16 @@
   "version": "2.4.4",
   "authors": [
     {
-      "name": "Vlad Karapetyan",
-      "email": "vlad.karapetyan.1988@mail.ru",
-      "homepage": "https://github.com/dollar007",
-      "role": "Developer"
-    },
-    {
       "name": "Mike Schwartz",
       "email": "mike@gluu.org",
       "homepage": "https://github.com/nynymike",
       "role": "Director"
+    },
+    {
+      "name": "Vlad Karapetyan",
+      "email": "mr.karapetyan88@gmail.com",
+      "homepage": "https://github.com/karapetyan88",
+      "role": "Developer"
     }
   ],
   "repositories": [
