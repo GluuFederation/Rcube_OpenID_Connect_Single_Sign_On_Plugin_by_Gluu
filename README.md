@@ -1,29 +1,31 @@
-# Roundcube OpenID Connect Single Sign-On (SSO) Plugin By Gluu
+# RoundCube OpenID Connect Single Sign-On (SSO) Plugin By Gluu
 
 ![image](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/roundcube.png)
 
 Gluu's OpenID Connect Single Sign-On (SSO) Roundcube plugin will enable you to authenticate users against any standard OpenID Connect Provider (OP). If you don't already have an OP you can [deploy the free open source Gluu Server](https://gluu.org/docs/deployment).  
 
 ## Requirements
-In order to use the Roundcube plugin you will need to have a standard OP (like Google or a Gluu Server) and the oxd server.
+In order to use the RoundCube plugin you will need to have a standard OP (like Google or a Gluu Server) and the oxd server.
+
+* Compatibility : 0.6.0 <= 10.21 versions
 
 * [Gluu Server Installation Guide](https://www.gluu.org/docs/deployment/).
 
 * [oxd Server Installation Guide](https://oxd.gluu.org/docs/oxdserver/install/)
 
- 
+
 ## Installation
  
 ### Download
 
-[Github source](https://github.com/GluuFederation/roundcube_oxd_plugin/archive/v3.0.0.zip).
+[Github source](https://github.com/GluuFederation/roundcube_oxd_plugin/archive/v2.4.4.zip).
 
 [Link to RoundCube repository](https://plugins.roundcube.net/packages/gluufederation/roundcube_oxd_plugin)
 
 To install RoundCube OpenID Connect Single Sign On (SSO) Plugin By Gluu via Composer, execute the following command 
 
 ```
-$ composer install `composer require "gluufederation/roundcube_oxd_plugin": "3.0.0"`
+$ composer install `composer require "gluufederation/roundcube_oxd_plugin": "2.4.4"`
 
 ```
 
@@ -32,7 +34,7 @@ $ composer install `composer require "gluufederation/roundcube_oxd_plugin": "3.0
 
 ### General
  
-In your Roundcube admin menu panel you should now see the OpenID Connect menu tab. Click the link to navigate to the General configuration  page:
+In your RoundCube admin menu panel you should now see the OpenID Connect menu tab. Click the link to navigate to the General configuration  page:
 
 ![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/1.png) 
 
@@ -75,16 +77,15 @@ In the plugin interface you can enable, disable and delete scopes.
 
 ### Attention
 
-For doing login to your Roundcube site, it is very important that your OP supports `imapData` scope, which contains your imap connection climes (`imapHost`,`imapPort`,`imapUsername`,`imapPassword`).
+For doing login to your RoundCube site, it is very important that your OP supports `imapData` scope, which contains your imap connection climes (`imapHost`,`imapPort`,`imapUsername`,`imapPassword`).
 This is not configurable in all OP's. It is configurable if you are using a Gluu Server.
 For example : `imapHost` = `ssl://imap.gmail.com` ; `imapPort` = `993` ; `imapUsername` = `username@gmail.com` ; `imapPassword` = `password` ; 
 
-
 #### Authentication
 
-##### Bypass the local Roundcube login page and send users straight to the OP for authentication
+##### Bypass the local RoundCube login page and send users straight to the OP for authentication
 
-Check this box so that when users attempt to login they are sent straight to the OP, bypassing the local Roundcube login screen.
+Check this box so that when users attempt to login they are sent straight to the OP, bypassing the local RoundCube login screen.
 When it is not checked, it will give proof the following screen.   
 
 ![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/4.png) 
