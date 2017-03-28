@@ -16,7 +16,7 @@
   ],
   "homepage": "https://github.com/GluuFederation/roundcube_oxd_plugin",
   "license": "MIT",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "authors": [
     {
       "name": "Mike Schwartz",
@@ -53,9 +53,9 @@
     "email": "support@gluu.org",
     "issues": "https://github.com/GluuFederation/roundcube_oxd_plugin/issues",
     "source": "https://github.com/GluuFederation/roundcube_oxd_plugin",
-    "wiki": "https://oxd.gluu.org/docs/plugin/roundcube/",
+    "wiki": "https://gluu.org/docs/oxd/3.0.1/plugin/roundcube/",
     "irc": "irc://irc.freenode.org/composer",
-    "docs": "https://oxd.gluu.org/docs/plugin/roundcube/"
+    "docs": "https://gluu.org/docs/oxd/3.0.1/plugin/roundcube/"
   },
   "extra": {
     "roundcube": {

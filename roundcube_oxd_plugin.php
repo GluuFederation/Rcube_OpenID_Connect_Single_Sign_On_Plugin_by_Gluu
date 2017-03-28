@@ -6,11 +6,11 @@
 	 *
 	 * @package	  OpenID Connect SSO Plugin by Gluu
 	 * @category  Plugin for RoundCube WebMail
-	 * @version   3.0.0
+	 * @version   3.0.1
 	 *
 	 * @author    Gluu Inc.          : <https://gluu.org>
 	 * @link      Oxd site           : <https://oxd.gluu.org>
-	 * @link      Documentation      : <https://oxd.gluu.org/docs/plugin/roundcube/>
+	 * @link      Documentation      : <https://gluu.org/docs/oxd/3.0.1/plugin/roundcube/>
 	 * @director  Mike Schwartz      : <mike@gluu.org>
 	 * @support   Support email      : <support@gluu.org>
 	 * @developer Volodya Karapetyan : <https://github.com/karapetyan88> <mr.karapetyan88@gmail.com>
@@ -300,7 +300,7 @@ $html.='
         } else {
             $html .= '<li id="social-sharing-setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
         }
-        $html .= '<li id=""><a data-method="#configopenid" href="https://oxd.gluu.org/docs/plugin/roundcube/" target="_blank">Documentation</a></li>';
+        $html .= '<li id=""><a data-method="#configopenid" href="https://gluu.org/docs/oxd/3.0.1/plugin/roundcube/" target="_blank">Documentation</a></li>';
         $html .= '</ul>
         <div class="container-page">';
         if (!$this->gluu_is_oxd_registered()) {
@@ -827,7 +827,7 @@ $html.='
         else {
             $html .= '<li id="social-sharing-setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
         }
-        $html .= '<li id=""><a data-method="#configopenid" href="https://oxd.gluu.org/docs/plugin/roundcube/" target="_blank">Documentation</a></li>';
+        $html .= '<li id=""><a data-method="#configopenid" href="https://gluu.org/docs/oxd/3.0.1/plugin/roundcube/" target="_blank">Documentation</a></li>';
         $html .= '</ul>
         <div class="container-page">';
         if (!$this->gluu_is_oxd_registered()) {
@@ -1374,7 +1374,7 @@ $html.='
         } else {
             $html .= '<li class="active" id="social-sharing-setup"><a href="'.$base_url.'?_task=settings&_action=plugin.gluu_sso-openidconfig">OpenID Connect Configuration</a></li>';
         }
-        $html .= '<li id=""><a data-method="#configopenid" href="https://oxd.gluu.org/docs/plugin/roundcube/" target="_blank">Documentation</a></li>';
+        $html .= '<li id=""><a data-method="#configopenid" href="https://gluu.org/docs/oxd/3.0.1/plugin/roundcube/" target="_blank">Documentation</a></li>';
         $html .= '</ul>
         <div class="container-page">';
         $html .= '            
