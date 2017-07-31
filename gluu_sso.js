@@ -4,7 +4,7 @@ jQuery(document).ready(function(){
     jQuery('#settings-sections #settings-tabs .listing').append(text);
     var text = '<span class="tablink gluusso " id="settingstabgluusso">' +
         '<a href="./?_task=settings&amp;_action=plugin.gluu_sso">OpenID Connect</a></span>';
-    jQuery('#tabsbar').append(text);
+    jQuery('#taskbar').append(text);
 
 });
 jQuery(document ).ready(function() {

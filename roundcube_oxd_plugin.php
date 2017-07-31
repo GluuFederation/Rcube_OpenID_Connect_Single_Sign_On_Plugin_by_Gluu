@@ -2652,16 +2652,16 @@ $html.='
 				        exit;
 			        }
 		        }
-            
+            $imapData = json_decode($get_user_info_array->imap_data[0]);
             $auth = $RCMAIL->plugins->exec_hook('authenticate', array(
-                'host' => $get_user_info_array->imapHost[0],
-                'user' => trim(rcube_utils::get_input_value('_user', $get_user_info_array->imapUsername[0])),
-                'pass' => rcube_utils::get_input_value('_pass', $get_user_info_array->imapPassword[0], true,$RCMAIL->config->get('password_charset', 'ISO-8859-1')),
+                'host' => $imapData->imapHost,
+                'user' => trim(rcube_utils::get_input_value('_user', $imapData->imapUsername)),
+                'pass' => rcube_utils::get_input_value('_pass', $imapData->imapPassword, true,$RCMAIL->config->get('password_charset', 'ISO-8859-1')),
                 'cookiecheck' => true,
                 'valid'       => true,
             ));
 
-            if($RCMAIL->login($get_user_info_array->imapUsername[0], $get_user_info_array->imapPassword[0],$get_user_info_array->imapHost[0], $auth['cookiecheck'])){
+            if($RCMAIL->login($imapData->imapUsername, $imapData->imapPassword,$imapData->imapHost, $auth['cookiecheck'])){
                 $RCMAIL->session->remove('temp');
                 $RCMAIL->session->regenerate_id(false);
                 $RCMAIL->session->set_auth_cookie();
@@ -2689,6 +2689,9 @@ $html.='
         $base_url = $this->getBaseUrl();
         $this->include_stylesheet('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
         $oxd_id = $this->gluu_db_query_select('gluu_oxd_id');
+        if($oxd_id == false){
+            return $content;
+        }
         $gluu_send_user_check = $this->gluu_db_query_select('gluu_send_user_check');
         $get_auth_url = $this->get_auth_url();
         $gluu_is_port_working = $this->gluu_is_port_working();
@@ -2739,8 +2742,23 @@ $html.='
             }
         }
     }
+    public function gluu_table_exists($gluu_action){
+        $schima_name = basename($this->app->config->get('db_dsnw'));
+        if(self::$gluuDB->query("SELECT count(*) tableCount
+                                FROM information_schema.tables
+                                WHERE table_schema = '$schima_name'
+                                AND table_name = 'gluu_table'")->fetchAll()[0]['tableCount'] == 0)
+        {
+            return false;
+        }
+        
+        return true;
+    }
     public function gluu_db_query_select($gluu_action){
-        return self::$gluuDB->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$gluu_action."'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        if($this->gluu_table_exists()){
+            return self::$gluuDB->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$gluu_action."'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        }
+        return false;
     }
     public function gluu_db_query_insert($gluu_action, $gluu_value){
         return self::$gluuDB->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('".$gluu_action."', '".$gluu_value."')");
