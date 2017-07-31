@@ -2,9 +2,9 @@ jQuery(document).ready(function(){
     var text = '<li class="listitem" id="settingsgluusso">' +
         '<a href="./?_task=settings&amp;_action=plugin.gluu_sso" >OpenID Connect</a></li>';
     jQuery('#settings-sections #settings-tabs .listing').append(text);
-    var text = '<span class="tablink gluusso " id="settingstabgluusso">' +
+    var text = '<span class="tablink gluusso " id="settingsgluusso">' +
         '<a href="./?_task=settings&amp;_action=plugin.gluu_sso">OpenID Connect</a></span>';
-    jQuery('#taskbar').append(text);
+    jQuery('#settings-tabs').append(text);
 
 });
 jQuery(document ).ready(function() {
