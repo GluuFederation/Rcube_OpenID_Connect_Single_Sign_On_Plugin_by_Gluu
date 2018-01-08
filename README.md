@@ -47,11 +47,11 @@ All these scopes are to be added with the help of this following link `https://g
 
 Navigate to your Gluu Server admin GUI. Click the `OpenID Connect` tab in the left hand navigation menu. Select `Scopes`. Find `imapData` and click on it. Now click `Add Claim`, search for `IMAP`, select the required claims and then click `OK`.
 
-![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/gluusrv1.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/v3.1.1/docu/gluusrv1.png) 
 
 Once you add the required claim, then you can add the claims on any user.
 
-![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/gluusrv2.png)
+![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/v3.1.1/docu/gluusrv2.png)
 
 
 ## Configuration
@@ -60,7 +60,7 @@ Once you add the required claim, then you can add the claims on any user.
  
 For the first time configuration, after logging in as `admin`(for example : `admin@email.org`), you should now see your RoundCube admin menu panel and the OpenID Connect menu tab. Click the link to navigate to the General configuration page:
 
-![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/rcopidlnk.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/v3.1.1/docu/rcopidlnk.png) 
 
 A short description of each field follows:
 
@@ -76,7 +76,7 @@ If your OpenID Provider supports dynamic registration, no additional steps are r
 
 If your OpenID Connect Provider doesn't support dynamic registration, you will need to insert your OpenID Provider `client_id` and `client_secret` on the following page.
 
-![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/rcregimg.png)  
+![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/v3.1.1/docu/rcregimg.png)  
 
 To generate your `client_id` and `client_secret` use the redirect uri: `https://{site-base-url}/index.php?option=oxdOpenId`.
 
@@ -95,7 +95,7 @@ Navigate to your Gluu Server admin GUI. Click the `Users` tab in the left hand n
 
 ### OpenID Connect Configuration
 
-![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/rcscopdtl.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/v3.1.1/docu/rcscopdtl.png) 
 
 #### Enrollment and Access Management
 
@@ -117,7 +117,7 @@ In the plugin interface you can enable, disable and delete scopes.
 
 To understand user permission more precisely, lets take a quick look at the image below:
 
-![image](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/RoundCube2.png)
+![image](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/v3.1.1/docu/RoundCube2.png)
 
 !!!Note: 
     Here Server permission means the Gluu Server and the client settings permission means the permission which is defined at the time of `oxd` client registration.
@@ -130,7 +130,7 @@ To understand user permission more precisely, lets take a quick look at the imag
 Check this box so that when users attempt to login they are sent straight to the OpenID Connect provider, bypassing the local RoundCube login screen.
 When it is not checked, it will give proof the following screen.   
 
-![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/master/docu/4.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/roundcube_oxd_plugin/v3.1.1/docu/4.png) 
 
 ##### Select acr
 
