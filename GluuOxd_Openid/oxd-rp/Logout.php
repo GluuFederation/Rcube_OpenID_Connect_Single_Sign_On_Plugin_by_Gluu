@@ -82,6 +82,10 @@
      */
     private $request_state = null;
     /**
+    * @var string $request_protection_access_token     protection access token for each request
+    */
+    private $request_protection_access_token;
+    /**
      * Response parameter from oXD-server
      * Doing logout user from all sites
      *
@@ -193,6 +197,21 @@
     {
         $this->request_oxd_id = $request_oxd_id;
     }
+    
+    /**
+    * @return string
+    */
+    function getRequestProtectionAccessToken() {
+        return $this->request_protection_access_token;
+    }
+
+    /**
+     * @param string $request_protection_access_token
+     * @return void
+     */
+    function setRequestProtectionAccessToken($request_protection_access_token) {
+        $this->request_protection_access_token = $request_protection_access_token;
+    }
     /**
      * Protocol command to oXD server
      * @return void
@@ -212,7 +231,8 @@
             "id_token_hint" => $this->getRequestIdToken(),
             "post_logout_redirect_uri" => $this->getRequestPostLogoutRedirectUri(),
             "state" => $this->getRequestState(),
-            "session_state" => $this->getRequestSessionState()
+            "session_state" => $this->getRequestSessionState(),
+            "protection_access_token" => $this->getRequestProtectionAccessToken()
         );
     }
 

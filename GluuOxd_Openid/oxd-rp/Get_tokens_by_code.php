@@ -77,6 +77,10 @@
      * @var string $request_scopes                           For getting needed scopes data from gluu-server
      */
     private $request_scopes  = null;
+    /**
+    * @var string $request_protection_access_token     protection access token for each request
+    */
+    private $request_protection_access_token;
 
     /**
      * Response parameter from oXD-server
@@ -184,6 +188,21 @@
     {
         $this->request_code = $request_code;
     }
+    
+    /**
+    * @return string
+    */
+    function getRequestProtectionAccessToken() {
+        return $this->request_protection_access_token;
+    }
+
+    /**
+     * @param string $request_protection_access_token
+     * @return void
+     */
+    function setRequestProtectionAccessToken($request_protection_access_token) {
+        $this->request_protection_access_token = $request_protection_access_token;
+    }
 
     /**
      * @return string
@@ -238,7 +257,8 @@
         $this->params = array(
             "oxd_id" => $this->getRequestOxdId(),
             "code" => $this->getRequestCode(),
-            "state" => $this->getRequestState()
+            "state" => $this->getRequestState(),
+            "protection_access_token" => $this->getRequestProtectionAccessToken()
         );
     }
 
