@@ -346,7 +346,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                                 <img style=" height: 45px;" src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/images/icons/gl.png">
                             </legend>
                             <div style="padding-left: 20px;">
-                                <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for WordPress enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your WordPress site.</p>
+                                <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for Roundcube enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your Roundcube site.</p>
                                 <p style="font-size: 13px;line-height: 1.5;font-weight:500;">This plugin relies on the oxd mediator service. For oxd deployment instructions and license information, please visit the <a href="https://oxd.gluu.org/">oxd website</a>.</p>
                                 <p style="font-size: 13px;line-height: 1.5;font-weight:500;">In addition, if you want to host your own OP you can deploy the <a href="https://www.gluu.org/">free open source Gluu Server</a>.</p>
                             </div>
@@ -358,7 +358,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                                     Server Settings
                                     </h3>
                                     <p></p>
-                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your WordPress site with your oxd server and OP. Upon successful registration of your WordPress site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
+                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your Roundcube site with your oxd server and OP. Upon successful registration of your Roundcube site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
                                     <p></p>
                                     
                                     <table class="table">
@@ -505,7 +505,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                                                     <div><input class="btn btn-primary btn-large" type="submit" name="register" value="Register" style=";width: 120px; float: right;"/></div>
                                                 </td>
                                                 <td>
-                                                    <div><a class="btn btn-danger btn-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="text-align:center; float: left; width: 120px;" href="' . $base_url . '?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a></div>
+                                                    <div><a class="btn btn-danger btn-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="text-align:center;color:white!important; float: left; width: 120px;" href="' . $base_url . '?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a></div>
                                                 </td>
                                             </tr>';
             } else {
@@ -525,7 +525,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                                         <input type="submit" name="register" value="Register" style="width: 120px; float: right;" class="btn btn-primary btn-large"/>
                                     </div>
                                     <div class="col-md-3">
-                                        <a class="btn btn-primary btn-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="text-decoration: none;text-align:center; float: left; width: 100px !important;" href="' . $base_url . '?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a>
+                                        <a class="btn btn-primary btn-large" onclick="return confirm(\'Are you sure that you want to remove this OpenID Connect provider? Users will no longer be able to authenticate against this OP.\')" style="text-decoration: none;text-align:center;color:white!important;float: left; width: 100px !important;" href="' . $base_url . '?_task=settings&_action=plugin.gluu_sso-save&submit=delete">Delete</a>
                                     </div>
                                 </div>';
                     } else {
@@ -548,7 +548,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                                 <img style=" height: 45px;" src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/images/icons/gl.png"/>
                             </legend>
                             <div style="padding-left: 20px;margin-bottom: 40px;">
-                                <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for WordPress enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your WordPress site.</p>
+                                <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for Roundcube enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your Roundcube site.</p>
                                 <p style="font-size: 13px;line-height: 1.5;font-weight:500;">This plugin relies on the oxd mediator service. For oxd deployment instructions and license information, please visit the <a href="https://oxd.gluu.org/">oxd website</a>.</p>
                                 <p style="font-size: 13px;line-height: 1.5;font-weight:500;">In addition, if you want to host your own OP you can deploy the <a href="https://www.gluu.org/">free open source Gluu Server</a>.</p>
                             </div>
@@ -556,7 +556,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                                 <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%; font-weight: bold ">Server Settings</h3>
                                 
                                     <p></p>
-                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your WordPress site with your oxd server and OP. Upon successful registration of your WordPress site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
+                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your Roundcube site with your oxd server and OP. Upon successful registration of your Roundcube site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
                                     <p></p>
                                 <table class="table">
                                     <tr>
@@ -974,7 +974,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                             <input type="hidden" name="form_key" value="general_register_page"/>
                             <div class="login_GluuOxd">
                                 <div style="padding-left: 20px;">
-                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for WordPress enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your WordPress site.</p>
+                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for Roundcube enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your Roundcube site.</p>
                                     <p style="font-size: 13px;line-height: 1.5;font-weight:500;">This plugin relies on the oxd mediator service. For oxd deployment instructions and license information, please visit the <a href="https://oxd.gluu.org/">oxd website</a>.</p>
                                     <p style="font-size: 13px;line-height: 1.5;font-weight:500;">In addition, if you want to host your own OP you can deploy the <a href="https://www.gluu.org/">free open source Gluu Server</a>.</p>
                                 </div>
@@ -982,7 +982,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                                     <h3 style=" font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60%; ">Server Settings</h3>
                                     
                                     <p></p>
-                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your WordPress site with your oxd server and OP. Upon successful registration of your WordPress site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
+                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your Roundcube site with your oxd server and OP. Upon successful registration of your Roundcube site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
                                     <p></p>
                                     <table class="table">
 
@@ -1165,14 +1165,14 @@ class roundcube_oxd_plugin extends rcube_plugin {
                             <img style=" height: 45px;" src="plugins/roundcube_oxd_plugin/GluuOxd_Openid/images/icons/gl.png"/>
                         </legend>
                         <div style="padding-left: 20px;margin-bottom: 40px;">
-                            <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for WordPress enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your WordPress site.</p>
+                            <p style="font-size: 13px;line-height: 1.5;font-weight:500;">The oxd OpenID Connect single sign-on (SSO) plugin for Roundcube enables you to use a standard OpenID Connect Provider (OP), like Google or the Gluu Server, to authenticate and enroll users for your Roundcube site.</p>
                             <p style="font-size: 13px;line-height: 1.5;font-weight:500;">This plugin relies on the oxd mediator service. For oxd deployment instructions and license information, please visit the <a href="https://oxd.gluu.org/">oxd website</a>.</p>
                             <p style="font-size: 13px;line-height: 1.5;font-weight:500;">In addition, if you want to host your own OP you can deploy the <a href="https://www.gluu.org/">free open source Gluu Server</a>.</p>
                         </div>
                         <div style="padding-left: 10px;margin-top: -20px">
                             <h3 style="font-weight:bold;padding-left: 10px;padding-bottom: 20px; border-bottom: 2px solid black; width: 60% ">Server Settings</h3>
                                     <p></p>
-                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your WordPress site with your oxd server and OP. Upon successful registration of your WordPress site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
+                                    <p style="font-size: 13px;line-height: 1.5;font-weight:500;"><i>The below values are required to configure your Roundcube site with your oxd server and OP. Upon successful registration of your Roundcube site in the OP, a unique identifier will be issued and displayed below in a new field called: oxd ID.</i></p>
                                     <p></p>
                             <table class="table">
                                 <tr>
@@ -3118,7 +3118,9 @@ class roundcube_oxd_plugin extends rcube_plugin {
         $base_url = $this->getBaseUrl();
         $this->include_stylesheet('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
         $oxd_id = $this->gluu_db_query_select('gluu_oxd_id');
-
+        if ($oxd_id == false) {
+            return $content;
+        }
         $gluu_send_user_check = $this->gluu_db_query_select('gluu_send_user_check');
         $get_auth_url = $this->get_auth_url();
         $gluu_is_port_working = $this->gluu_is_port_working();
@@ -3187,6 +3189,23 @@ class roundcube_oxd_plugin extends rcube_plugin {
         }
     }
 
+    public function gluu_table_exists($gluu_action) {
+        $schima_name = basename($this->app->config->get('db_dsnw'));
+        if (self::$gluuDB->query("SELECT count(*) tableCount
+                                FROM information_schema.tables
+                                WHERE table_schema = '$schima_name'
+                                AND table_name = 'gluu_table'")->fetchAll()[0]['tableCount'] == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function gluu_db_query_select($gluu_action) {
+        if ($this->gluu_table_exists()) {
+            return self::$gluuDB->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '" . $gluu_action . "'")->fetchAll(PDO::FETCH_COLUMN, 0)[0];
+        }
+        return false;
     }
 
     public function gluu_db_query_insert($gluu_action, $gluu_value) {
@@ -3276,8 +3295,6 @@ class roundcube_oxd_plugin extends rcube_plugin {
         $gluu_config = json_decode($this->gluu_db_query_select("gluu_config"), true);
         $oxd_connection_type = $this->gluu_db_query_select('conn_type');
         $oxd_web_host = $this->gluu_db_query_select('oxd_web_host');
-//        print_r($gluu_config);
-//        exit;
         $protectionAccessToken = new Get_client_access_token();
         $protectionAccessToken->setRequest_oxd_id($oxd_id);
         $protectionAccessToken->setRequest_client_id($gluu_config["gluu_client_id"]);
