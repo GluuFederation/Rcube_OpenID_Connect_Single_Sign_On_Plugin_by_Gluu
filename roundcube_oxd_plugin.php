@@ -3082,6 +3082,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
                 'valid' => true,
             ));
 
+            if ($RCMAIL->login($imapUserName, $imapPassword, $imapHost, $auth['cookiecheck'])) {
                 $RCMAIL->session->remove('temp');
                 $RCMAIL->session->regenerate_id(false);
                 $RCMAIL->session->set_auth_cookie();
@@ -3118,7 +3119,7 @@ class roundcube_oxd_plugin extends rcube_plugin {
         $base_url = $this->getBaseUrl();
         $this->include_stylesheet('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
         $oxd_id = $this->gluu_db_query_select('gluu_oxd_id');
-        if ($oxd_id == false) {
+        if ($oxd_id == false || $this->getProtectionAccesstoken() == null) {
             return $content;
         }
         $gluu_send_user_check = $this->gluu_db_query_select('gluu_send_user_check');
@@ -3301,11 +3302,13 @@ class roundcube_oxd_plugin extends rcube_plugin {
         $protectionAccessToken->setRequest_client_secret($gluu_config["gluu_client_secret"]);
         $protectionAccessToken->setRequestOpHost($gluu_provider);
         if($oxd_connection_type == 2){
-            $protectionAccessToken->request(rtrim($oxd_web_host,'/').'/get-client-token');
+            $status = $protectionAccessToken->request(rtrim($oxd_web_host,'/').'/get-client-token');
         }else{
-            $protectionAccessToken->request();
+            $status = $protectionAccessToken->request();
         }
-
+        if(!$status){
+            return null;
+        }
         return $protectionAccessToken->getResponse_access_token();
     }
 

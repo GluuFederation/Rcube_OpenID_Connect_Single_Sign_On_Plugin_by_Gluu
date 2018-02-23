@@ -623,3 +623,10 @@ td, th {
     vertical-align: middle
 }
 
+.btn-primary{
+    width: 120px !important;
+}
+
+td{
+    width:50%;
+}
