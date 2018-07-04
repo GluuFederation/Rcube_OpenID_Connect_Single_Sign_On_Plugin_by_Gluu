@@ -202,6 +202,15 @@ class roundcube_oxd_plugin extends rcube_plugin {
         $conn_type = $this->gluu_db_query_select('conn_type')?$this->gluu_db_query_select('conn_type'):1;
         $oxd_web_host = $this->gluu_db_query_select('oxd_web_host');
         $isAdmin = $_SESSION['isAdmin']?$_SESSION['isAdmin']:0;
+	    
+        //Below covers the case, if the user email is first email and it matches the email in gluu_table
+        if($isAdmin == 0)
+        {
+                if($gluu_config[admin_email] == $_SESSION[username]){
+                        $_SESSION['isAdmin'] = 1;
+                }
+        }
+
         $html = '
 <link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
 <link href="plugins/roundcube_oxd_plugin/GluuOxd_Openid/css/gluu-oxd-css1.css" rel="stylesheet"/>
