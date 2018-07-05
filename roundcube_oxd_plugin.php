@@ -207,7 +207,8 @@ class roundcube_oxd_plugin extends rcube_plugin {
         if($isAdmin == 0)
         {
                 if($gluu_config[admin_email] == $_SESSION[username]){
-                        $_SESSION['isAdmin'] = 1;
+                        $_SESSION['isAdmin'] = 1;                        
+			$isAdmin = $_SESSION['isAdmin'];
                 }
         }
 
