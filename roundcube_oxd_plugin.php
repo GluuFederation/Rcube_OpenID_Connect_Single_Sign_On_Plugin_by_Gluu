@@ -3047,8 +3047,8 @@ class roundcube_oxd_plugin extends rcube_plugin {
 	{
             	if (!empty($idp_roles_csv_string)) 
 	    	{
-			$idp_roless_csv_array = explode(',', $idp_roles_csv_string);
-			foreach ($idp_roless_csv_array as $idp_role) 
+			$idp_roles_csv_array = explode(',', $idp_roles_csv_string);
+			foreach ($idp_roles_csv_array as $idp_role) 
 			{
                 		$reg_user_permission = str_replace(str_split('[] '), "", $idp_role);
             			$gluu_new_roles = json_decode($this->gluu_db_query_select('gluu_new_role'));
