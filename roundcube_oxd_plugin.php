@@ -3041,23 +3041,45 @@ class roundcube_oxd_plugin extends rcube_plugin {
                 $username = $email_split[0];
             }
 
-            if (!empty($get_user_info_array->permission[0])) {
-                $world = str_replace("[", "", $get_user_info_array->permission[0]);
-                $reg_user_permission = str_replace("]", "", $world);
-            } elseif (!empty($get_tokens_by_code_array->permission[0])) {
-                $world = str_replace("[", "", $get_user_info_array->permission[0]);
-                $reg_user_permission = str_replace("]", "", $world);
-            }
             $bool = false;
-            $gluu_new_roles = json_decode($this->gluu_db_query_select('gluu_new_role'));
-            $gluu_users_can_register = $this->gluu_db_query_select('gluu_users_can_register');
             $isAdmin = false;
-            if ($gluu_users_can_register == 2 and ! empty($gluu_new_roles)) {
-                foreach ($gluu_new_roles as $gluu_new_role) {
-                    if (strstr($reg_user_permission, $gluu_new_role)) {
-                        $bool = true;
-                    }
-                }
+	foreach ($get_user_info_array->role as $idp_roles_csv_string ) 
+	{
+            	if (!empty($idp_roles_csv_string)) 
+	    	{
+			$idp_roless_csv_array = explode(',', $idp_roles_csv_string);
+			foreach ($idp_roless_csv_array as $idp_role) 
+			{
+                		$reg_user_permission = str_replace(str_split('[] '), "", $idp_role);
+            			$gluu_new_roles = json_decode($this->gluu_db_query_select('gluu_new_role'));
+            			$gluu_users_can_register = $this->gluu_db_query_select('gluu_users_can_register');
+            			if ($gluu_users_can_register == 2 and ! empty($gluu_new_roles)) 
+				{
+                			foreach ($gluu_new_roles as $gluu_new_role) 	
+					{
+                    				if (strtoupper($reg_user_permission) == strtoupper($gluu_new_role)) 
+						{
+                        				$bool = true;
+							break;
+                    				}
+                			}
+	    			}
+				if ($bool == true)
+				{
+					break;
+				}
+			}
+            	} 
+		elseif (!empty($get_tokens_by_code_array->role[0])) 
+		{
+                	$world = str_replace("[", "", $idp_role);
+                	$reg_user_permission = str_replace("]", "", $world);
+            	}
+		if ($bool == true)
+		{
+			break;
+		}
+	}
                 if (!$bool) {
                     echo "<script>
                                 alert('You are not authorized for an account on this application. If you think this is an error, please contact your OpenID Connect Provider (OP) admin.');
@@ -3065,7 +3087,6 @@ class roundcube_oxd_plugin extends rcube_plugin {
                          </script>";
                     exit;
                 }
-            }
             if (strstr($reg_user_permission, 'admin')) {
                 $isAdmin = true;
             }
